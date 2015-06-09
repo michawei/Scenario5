@@ -1,0 +1,19 @@
+
+<div ng-controller="contentCtrl" class="container" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; ">
+	<ul class="list-group">
+	<div class="row" ng-repeat="question in form_questions">
+		<p>
+		<div ng-show="!question.edit" class="col-lg-6 list-group-item">
+			{{question.title}}
+		</div>
+		<div ng-show="question.edit" class="col-lg-6 list-group-item">
+			<input ng-model="question_new_title" type="text" class="form-control" value="question.title" placeholder="question title" />
+		</div>
+		<botton type="botton" class="btn btn-default glyphicon glyphicon-pencil" ng-click="question.edit=true;" > Edit </botton>
+		<botton type="botton" class="btn btn-default glyphicon glyphicon-floppy-disk" ng-click="question.edit=false; question.title=question_new_title;" > Save </botton>
+		<botton type="botton" class="btn btn-default glyphicon glyphicon-trash" ng-click="delete_question(question);"> Delete </botton>
+		</p>
+	</div>
+	</ul>
+	<botton type="botton" class="btn btn-primary glyphicon glyphicon-plus" ng-click="add_question()"> Add </botton>
+</div>
