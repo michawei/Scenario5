@@ -8,6 +8,7 @@ var mongoose = require('mongoose');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
+var forms = require('./routes/forms')
 
 var app = express();
 
@@ -25,6 +26,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/users', users);
+app.use('/forms', forms);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -57,7 +59,7 @@ app.use(function(err, req, res, next) {
   });
 });
 
-mongoose.connect('mongodb://localhost/scenario5', function(err) {
+mongoose.connect('mongodb://localhost/Scenario5:server', function(err) {
   if(err) {
     console.log('mongodb connection error', err);
   } else {

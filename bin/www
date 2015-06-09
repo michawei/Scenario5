@@ -8,6 +8,15 @@ var app = require('../app');
 var debug = require('debug')('Scenario5:server');
 var http = require('http');
 
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/Scenario5:server', function(err) {
+  if(err) {
+    console.log('mongodb connection error', err);
+  } else {
+    console.log('mongodb connection successful');
+  }
+});
+
 /**
  * Get port from environment and store in Express.
  */
