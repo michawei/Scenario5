@@ -1,0 +1,25 @@
+{
+  "name": "scenario5",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/michawei/Scenario5.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/michawei/Scenario5/issues"
+  },
+  "homepage": "https://github.com/michawei/Scenario5#readme",
+  "dependencies": {
+    "angular": "^1.3.16",
+    "bootstrap": "^3.3.4",
+    "express": "^4.12.4",
+    "mongoose": "^4.0.5"
+  }
+}
