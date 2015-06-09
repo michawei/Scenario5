@@ -11,7 +11,7 @@ router.get('/', function(req, res, next) {
   });  
 });
 
-/* POST /todos */
+/* POST /forms */
 router.post('/', function(req, res, next) {
   Forms.create(req.body, function (err, post) {
     if (err) return next(err);
@@ -19,7 +19,7 @@ router.post('/', function(req, res, next) {
   });
 });
 
-/* GET /todos/:id 某個id的服務 */
+/* GET /forms/:id 某個id的服務 */
 router.get('/:id', function(req, res, next) {
   Forms.findById(req.params.id, function (err, post) {
     if (err) return next(err);
@@ -27,7 +27,7 @@ router.get('/:id', function(req, res, next) {
   });
 });
 
-/* PUT /todos/:id */
+/* PUT /forms/:id */
 router.put('/:id', function(req, res, next) {
   Forms.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
@@ -35,7 +35,7 @@ router.put('/:id', function(req, res, next) {
   });
 });
 
-/* DELETE /todos/:id */
+/* DELETE /forms/:id */
 router.delete('/:id', function(req, res, next) {
   Forms.findByIdAndRemove(req.params.id, req.body, function (err, post) {
     if (err) return next(err);
