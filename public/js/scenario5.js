@@ -1,0 +1,1 @@
+angular.module('scenario5App', ['ngDragDrop']);
