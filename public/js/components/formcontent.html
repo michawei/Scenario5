@@ -1,19 +1,92 @@
+<div ng-controller="contentCtrl as content" ng-hide='showList'>
+	<!-- Modal -->
+  <div class="modal fade" id="saveModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Form Saved</h4>
+        </div>
+        <div class="modal-body">
+        	You have saved the current form. Do you want to continue to edit? 
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='setShowList(true)'>No, Go Back to List</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">Yes, Continue to Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<div ng-controller="contentCtrl" class="container" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; ">
-	<ul class="list-group">
-	<div class="row" ng-repeat="question in form_questions">
-		<p>
-		<div ng-show="!question.edit" class="col-lg-6 list-group-item">
-			{{question.title}}
+  <div id="cancelModal" class="modal fade">
+	    <div class="modal-dialog">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                <h4 class="modal-title">Cancel Confirmation</h4>
+	            </div>
+	            <div class="modal-body">
+	                <p>You are about to cancel your edits. Do you want to continue?</p>
+	                <p class="text-warning"><small>Unsaved changes would be lost</small></p>
+	            </div>
+	            <div class="modal-footer">
+	                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='setShowList(true)'>Yes</button>
+	                <button type="button" class="btn btn-primary" data-dismiss="modal">No, I want to Save</button>
+	            </div>
+	        </div>
+	    </div>
+	  </div>
+
+
+	<div class="container col-xs-offset-2 col-xs-10" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; ">
+
+		<ul class="list-unstyled">
+		<div class="row" ng-repeat="question in formArr">
+			<li ng-show="!question.edit" ng-click="content.setEdit(question,true)" class="col-xs-2" style='margin-right: 5px'>
+				<h5> {{question.title}} : </h5>
+			</li>
+			<li ng-show="question.edit" class="col-xs-2" style='margin-right: 5px;'>
+				<input ng-model="content.question_new_title" type="text" class="form-control" placeholder="question title" ng-blur="content.setEdit(question, false)"autofocus/>
+			</li>
+			<div class="col-xs-3">
+				<div ng-if='question.type == "textbox"'>
+					<input type='text' class='form-control input-sm'></input>
+				</div> 
+				<div ng-if='question.type == "select"'>
+					<input type='text' class='form-control input-sm' ng-repeat='option in question.options' ng-model='option' ng-blur='content.setOption($index, option, question)'style='margin-bottom: 5px;' autofocus></input>
+					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.addOptions(question)'> Add Options </button>
+					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.delOptions(question)'> Delete Options </button>
+				</div> 
+				<div ng-if='question.type == "checkbox"'>
+					<input type='text' class='form-control input-sm' ng-repeat='option in question.options' ng-model='option' ng-blur='content.setOption($index, option, question)'style='margin-bottom: 5px;' autofocus></input>
+					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.addOptions(question)'> Add Options </button>
+					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.delOptions(question)'> Delete Options </button>
+				</div> 
+			</div>
+			<select class="form-control input-sm col-xs-2" ng-model="question.type">
+				<option value="" disabled selected>--Select Input Type--</option>
+			  <option value="textbox">TextBox</option>
+			  <option value="select">Select</option>
+			  <option value="checkbox">Check Box</option>
+			</select>
+			<a href ng-click="delete_question(question);" ng-style="{color: content.Xcolor}" ng-mouseover='content.Xcolor = "#a4a4a4"' ng-mouseleave='content.Xcolor = "#d2d2d2"'>
+			  <span style='margin-left:10px;' class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+			</a>
 		</div>
-		<div ng-show="question.edit" class="col-lg-6 list-group-item">
-			<input ng-model="question_new_title" type="text" class="form-control" value="question.title" placeholder="question title" />
-		</div>
-		<botton type="botton" class="btn btn-default glyphicon glyphicon-pencil" ng-click="question.edit=true;" > Edit </botton>
-		<botton type="botton" class="btn btn-default glyphicon glyphicon-floppy-disk" ng-click="question.edit=false; question.title=question_new_title;" > Save </botton>
-		<botton type="botton" class="btn btn-default glyphicon glyphicon-trash" ng-click="delete_question(question);"> Delete </botton>
-		</p>
+		</ul>
+		<botton type="botton" class="btn btn-primary btn-md" ng-click="add_question()"> 
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+			Add 
+		</botton>
+		<span class='pull-right'>
+			<button ng-click='content.saveForm() && setShowList(true)' class="btn btn-success btn-md" data-toggle="modal" data-target="#saveModal">
+				<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+			  Save
+			</button>
+			<button class="btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">
+				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+			  Cancel
+			</button>
+		</span>
 	</div>
-	</ul>
-	<botton type="botton" class="btn btn-primary glyphicon glyphicon-plus" ng-click="add_question()"> Add </botton>
 </div>

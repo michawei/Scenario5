@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 var FormsSchema = new mongoose.Schema({
 	name: { type: String, unique: true },
-	category: String,
+	category: { type: String, default: 'All' },
 	form: Array,
 	date: { type: Date, default: Date.now },
 });
