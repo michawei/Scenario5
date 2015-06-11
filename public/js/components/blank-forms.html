@@ -1,0 +1,32 @@
+<div class="container col-xs-offset-2 col-xs-10" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; " ng-if='page == 3' ng-controller='BlankController as blank'>
+
+		<ul class="list-unstyled" id="sortable">
+		<div class="row" ng-repeat="question in formArr">
+			<li>
+				<div class="col-xs-8" style='margin-bottom: 20px'>
+					<label> {{question.title}} :  </label>
+					<div>
+						<input id='{{ question.title }}' ng-if='question.type == "textbox"'  type='text' class='form-control input-sm'></input>
+						<select id='{{ question.title }}' ng-if='question.type == "select"' class="form-control input-sm col-xs-2">
+							<option value="" disabled selected>--Select An Option--</option>
+						  <option ng-repeat='option in question.options'>{{ option }}</option>
+						</select>
+						<label id='{{ question.title }}' ng-if='question.type == "checkbox"' ng-repeat='option in question.options' class="checkbox-inline">
+							<input type="checkbox" checklist-model="q.ops" checklist-value="option">
+							{{ option }}
+						</label>
+				  </div>
+			  </div>
+			</li>
+		</div>
+		</ul>
+			<button ng-click='blank.submitForm()' class="btn btn-success btn-md">
+				<span class="glyphicon glyphicon-open" aria-hidden="true"></span>
+			  Submit
+			</button>
+			<button class="btn btn-danger btn-md" ng-click='setPage(1)'>
+				<span class="glyphicon glyphicon-remove" aria-hidden="true" ></span>
+			  Cancel
+			</button>
+		</span>
+	</div>

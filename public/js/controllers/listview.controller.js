@@ -3,7 +3,7 @@ angular.module('scenario5App').controller('ListViewController', function($scope,
 	this.del = false;
 	this.newFormName = '';
 
-	$scope.showList = true;
+	$scope.page = 1;
 
   $scope.formsList = [];
   $scope.name = '';
@@ -18,9 +18,9 @@ angular.module('scenario5App').controller('ListViewController', function($scope,
 		alert("cannot get forms from db");
 	  });
 
-	$scope.setShowList = function(bool) {
-		$scope.showList = bool;
-		if(bool) {
+	$scope.setPage = function(num) {
+		$scope.page = num;
+		if(num == 1) {
 			$http.get('/forms').
 			  success(function(data) {
 			  	$scope.formsList = data;
@@ -38,11 +38,16 @@ angular.module('scenario5App').controller('ListViewController', function($scope,
 			$scope.formArr = formArr;
 			$scope.id = id;
 			this.edit = false;
-			$scope.setShowList(false);
+			$scope.setPage(2);
 		} else if(this.del) {
 		  //do nothing
+		  this.delete = false;
 		} else {
-		  alert('use: ' + name);
+			$scope.name = name;
+			$scope.category = category;
+			$scope.formArr = formArr;
+			$scope.id = id;
+		  $scope.setPage(3);
 	  }
 	}
 
@@ -62,7 +67,7 @@ angular.module('scenario5App').controller('ListViewController', function($scope,
 			$http.get('/forms').success(function(data) {
 			  $scope.formsList = data;
 			});
-			//$scope.apply();
+			//$scope.$apply();
 		}
 		this.del = false;
 		$scope.name = '';

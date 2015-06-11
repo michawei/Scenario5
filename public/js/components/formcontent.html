@@ -1,4 +1,4 @@
-<div ng-controller="contentCtrl as content" ng-hide='showList'>
+<div ng-controller="contentCtrl as content" ng-show='page == 2'>
 	<!-- Modal -->
   <div class="modal fade" id="saveModal">
     <div class="modal-dialog">
@@ -11,7 +11,7 @@
         	You have saved the current form. Do you want to continue to edit? 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='setShowList(true)'>No, Go Back to List</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='setPage(1)'>No, Go Back to List</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal">Yes, Continue to Edit</button>
         </div>
       </div>
@@ -30,7 +30,7 @@
 	                <p class="text-warning"><small>Unsaved changes would be lost</small></p>
 	            </div>
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='setShowList(true)'>Yes</button>
+	                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='setPage(1)'>Yes</button>
 	                <button type="button" class="btn btn-primary" data-dismiss="modal">No, I want to Save</button>
 	            </div>
 	        </div>
@@ -40,13 +40,13 @@
 
 	<div class="container col-xs-offset-2 col-xs-10" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; ">
 
-		<ul class="list-unstyled">
+		<ul class="list-unstyled" id="sortable">
 		<div class="row" ng-repeat="question in formArr">
 			<li ng-show="!question.edit" ng-click="content.setEdit(question,true)" class="col-xs-2" style='margin-right: 5px'>
 				<h5> {{question.title}} : </h5>
 			</li>
 			<li ng-show="question.edit" class="col-xs-2" style='margin-right: 5px;'>
-				<input ng-model="content.question_new_title" type="text" class="form-control" placeholder="question title" ng-blur="content.setEdit(question, false)"autofocus/>
+				<input ng-model="content.question_new_title" type="text" class="form-control" placeholder="question title" ng-blur="content.setEdit(question, false)" autofocus/>
 			</li>
 			<div class="col-xs-3">
 				<div ng-if='question.type == "textbox"'>
@@ -69,6 +69,9 @@
 			  <option value="select">Select</option>
 			  <option value="checkbox">Check Box</option>
 			</select>
+			<a href ng-style="{color: content.Scolor}" ng-mouseover='content.Scolor = "#a4a4a4"' ng-mouseleave='content.Scolor = "#d2d2d2"'>
+				<span style='margin-left:10px;' class="glyphicon glyphicon-sort" aria-hidden="false"></span>
+			</a>
 			<a href ng-click="delete_question(question);" ng-style="{color: content.Xcolor}" ng-mouseover='content.Xcolor = "#a4a4a4"' ng-mouseleave='content.Xcolor = "#d2d2d2"'>
 			  <span style='margin-left:10px;' class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 			</a>
