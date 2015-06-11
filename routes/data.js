@@ -1,46 +1,47 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var Forms = require('../models/Forms.js');
+var Forms = require('../models/Data.js');
 
 /* GET forms listing. */
 router.get('/', function(req, res, next) {
-  Forms.find(function (err, todos) {
+  Forms.find(function (err, data) {
     if (err) return next(err);
-    res.json(todos);
+    res.json(data);
   });  
 });
 
-/* POST /forms */
+/* POST /data */
 router.post('/', function(req, res, next) {
-  Forms.create(req.body, function (err, post) {
+  Forms.create(req.body, function (err, data) {
     if (err) return next(err);
-    res.json(post);
+    res.json(data);
   });
 });
 
-/* GET /forms/:id 某個id的服務 */
+/* GET /data/:id 某個id的服務 */
 router.get('/:id', function(req, res, next) {
-  Forms.findById(req.params.id, function (err, post) {
+  Forms.findById(req.params.id, function (err, data) {
     if (err) return next(err);
-    res.json(post);
+    res.json(data);
   });
 });
 
-/* PUT /forms/:id */
+/* PUT /data/:id */
 router.put('/:id', function(req, res, next) {
-  Forms.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+  Forms.findByIdAndUpdate(req.params.id, req.body, function (err, data) {
     if (err) return next(err);
-    res.json(post);
+    res.json(data);
   });
 });
 
-/* DELETE /forms/:id */
+/* DELETE /data/:id */
 router.delete('/:id', function(req, res, next) {
-  Forms.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+  Forms.findByIdAndRemove(req.params.id, req.body, function (err, data) {
     if (err) return next(err);
-    res.json(post);
+    res.json(data);
   });
 });
 
 module.exports = router;
+

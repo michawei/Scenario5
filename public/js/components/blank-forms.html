@@ -1,4 +1,45 @@
-<div class="container col-xs-offset-2 col-xs-10" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; " ng-if='page == 3' ng-controller='BlankController as blank'>
+<div ng-show='page == 3' ng-controller='BlankController as blank'>
+
+  <!-- Modal -->
+  <div class="modal fade" id="submitModal" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">You Are Submitting This Form</h4>
+        </div>
+        <div class="modal-body">
+        	<p>You are about to submit this form. Do you want to continue? </p>
+        	<p class="text-warning"><small>You and won't be able to edit any of your answers.</small></p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='blank.submitForm();setPage(2)'>Yes, Submit Form</button>
+          <button type="button" class="btn btn-primary" data-dismiss="modal">No, Continue to Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="cancelblankModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Cancel Confirmation</h4>
+            </div>
+            <div class="modal-body">
+                <p>You are about to cancel your edits. Do you want to continue?</p>
+                <p class="text-warning"><small>This form will be discarded</small></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='setPage(1)'>Yes</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">No, I want to Submit</button>
+            </div>
+        </div>
+    </div>
+  </div>
+
+	<div class="container col-xs-offset-2 col-xs-10" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; ">
 
 		<ul class="list-unstyled" id="sortable">
 		<div class="row" ng-repeat="question in formArr">
@@ -11,8 +52,8 @@
 							<option value="" disabled selected>--Select An Option--</option>
 						  <option ng-repeat='option in question.options'>{{ option }}</option>
 						</select>
-						<label id='{{ question.title }}' ng-if='question.type == "checkbox"' ng-repeat='option in question.options' class="checkbox-inline">
-							<input type="checkbox" checklist-model="q.ops" checklist-value="option">
+						<label ng-if='question.type == "checkbox"' ng-repeat='option in question.options' class="checkbox-inline">
+							<input id='{{ question.title }}' type="checkbox" value='{{ option }}'>
 							{{ option }}
 						</label>
 				  </div>
@@ -20,13 +61,14 @@
 			</li>
 		</div>
 		</ul>
-			<button ng-click='blank.submitForm()' class="btn btn-success btn-md">
+			<button data-toggle="modal" data-target="#submitModal" class="btn btn-success btn-md">
 				<span class="glyphicon glyphicon-open" aria-hidden="true"></span>
 			  Submit
 			</button>
-			<button class="btn btn-danger btn-md" ng-click='setPage(1)'>
+			<button class="btn btn-danger btn-md" data-toggle="modal" data-target="#cancelblankModal">
 				<span class="glyphicon glyphicon-remove" aria-hidden="true" ></span>
 			  Cancel
 			</button>
 		</span>
 	</div>
+</div>
