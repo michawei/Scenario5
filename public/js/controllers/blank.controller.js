@@ -1,15 +1,15 @@
-angular.module('scenario5App').controller('BlankController', function($scope, $http) {
+angular.module('scenario5App').controller('BlankController', ['$scope', '$http', function($scope, $http) {
 	
-	//addEventListener('load', load, false);
   this.dataArr = [];
 
 	this.submitForm = function() {
+		this.dataArr = [];
 		for(var i = 0; i < $scope.formArr.length; i++) {
 			var title = $scope.formArr[i].title;
-			var id = '#' + title;
+			var id = '#Question' + i;
 			if($scope.formArr[i].type == 'checkbox') {
 				var checkVal = [];
-				$( 'input:checkbox[id^="' + title + '"]:checked' ).each( function() {
+				$( 'input:checkbox[id^="Question' + i + '"]:checked' ).each( function() {
 					checkVal.push($(this).attr("value"));
 				});
 				this.dataArr.push( { 'question' : title, 'ans' : checkVal });
@@ -24,4 +24,4 @@ angular.module('scenario5App').controller('BlankController', function($scope, $h
 			'data' : this.dataArr 
 		});
 	}
-});
+}]);

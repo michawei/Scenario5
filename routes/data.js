@@ -19,9 +19,9 @@ router.post('/', function(req, res, next) {
   });
 });
 
-/* GET /data/:id 某個id的服務 */
+/* GET /data/fromId 某個id的服務 */
 router.get('/:id', function(req, res, next) {
-  Forms.findById(req.params.id, function (err, data) {
+	Forms.find({ 'formId': req.params.id }, function (err, data) {
     if (err) return next(err);
     res.json(data);
   });
@@ -42,6 +42,8 @@ router.delete('/:id', function(req, res, next) {
     res.json(data);
   });
 });
+
+//add another delete method 
 
 module.exports = router;
 

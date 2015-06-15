@@ -11,8 +11,26 @@
         	You have saved the current form. Do you want to continue to edit? 
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='setPage(1)'>No, Go Back to List</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='content.goBack()'>No, Go Back to List</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal">Yes, Continue to Edit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="saveAsModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Save As...</h4>
+        </div>
+        <div class="modal-body">
+        	<p>Form Name: <input ng-model='content.newFormName'></input> </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" ng-click='content.makeNew()'>Save As {{ content.newFormName }}</button>
         </div>
       </div>
     </div>
@@ -30,7 +48,7 @@
 	                <p class="text-warning"><small>Unsaved changes would be lost</small></p>
 	            </div>
 	            <div class="modal-footer">
-	                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='setPage(1)'>Yes</button>
+	                <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='content.goBack()'>Yes</button>
 	                <button type="button" class="btn btn-primary" data-dismiss="modal">No, I want to Save</button>
 	            </div>
 	        </div>
@@ -39,6 +57,9 @@
 
 
 	<div class="container col-xs-offset-2 col-xs-10" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; ">
+		
+    <h2> {{ name }} </h2> 
+		<br>
 
 		<ul class="list-unstyled" id="sortable">
 		<div class="row" ng-repeat="question in formArr">
@@ -82,9 +103,13 @@
 			Add 
 		</botton>
 		<span class='pull-right'>
-			<button ng-click='content.saveForm() && setShowList(true)' class="btn btn-success btn-md" data-toggle="modal" data-target="#saveModal">
+			<button ng-click='content.saveForm()' class="btn btn-success btn-md" data-toggle="modal" data-target="#saveModal">
 				<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
 			  Save
+			</button>
+			<button class="btn btn-info btn-md" data-toggle="modal" data-target="#saveAsModal">
+				<span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span>
+			  Save As...
 			</button>
 			<button class="btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">
 				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>

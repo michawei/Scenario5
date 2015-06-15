@@ -3,6 +3,7 @@ angular.module('scenario5App').controller('contentCtrl', ['$scope', '$http', fun
 	this.question_new_title = '';
 	this.Xcolor = '#D2D2D2';
 	this.Scolor = '#d2d2d2';
+	this.newFormName = '';
 
 	$scope.add_question = function(){
 		$scope.formArr.push({"title":"click to edit", "edit": false, 'options': []});
@@ -32,6 +33,20 @@ angular.module('scenario5App').controller('contentCtrl', ['$scope', '$http', fun
 	this.saveForm = function() {
 		$http.put('/forms/' + $scope.id, {form: $scope.formArr});
 	};
+
+	this.makeNew = function() {
+		$http.post('/forms', { name : this.newFormName, form: $scope.formArr }).success(function(data) {
+			$scope.formsList.push(data);
+		}).error(function() {
+			alert('Form ' + $scope.name + ' already exists');
+		});
+		this.newFormName = '';
+		$scope.setPage(1);
+	}
+
+	this.goBack = function() {
+		$scope.setPage(1)
+	}
 
 	this.addOptions = function(question) {
 		question.options.push('Option #' + (question.options.length + 1));

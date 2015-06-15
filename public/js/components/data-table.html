@@ -1,0 +1,30 @@
+<div ng-show='page == 5' ng-controller='DataTableController as table'> 
+
+	<div class="container col-xs-12" style="margin-top:5%; margin-bottom:5%; border: 1px solid 000000; ">
+
+		<table class='table table-striped'>
+      <tr>
+		    <th ng-repeat='tb in tableArr track by $index'> {{ tb }}</th>
+		    <th> Options </th>
+		  </tr>
+		  <tr ng-repeat='data in dataArr track by $index'>
+		  	<td ng-repeat='item in data.data track by $index'> 
+		      {{ item.ans }} 
+		    </td>
+		    <td> 
+		    	<button class="btn btn-danger btn-xs" ng-click='table.removeData(data._id, $index)'>
+						<span class="glyphicon glyphicon-remove" aria-hidden="true" ></span>
+					  Delete
+				  </button>
+			  </td>
+		  </tr>
+		</table>
+
+		<button class="btn btn-info btn-md" ng-click='table.goBack()'>
+			<span class="glyphicon glyphicon-menu-left" aria-hidden="true" ></span>
+		  Back
+		</button>
+
+	</div>
+
+</div>

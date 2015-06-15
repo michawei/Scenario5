@@ -13,7 +13,7 @@
         	<p class="text-warning"><small>You and won't be able to edit any of your answers.</small></p>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='blank.submitForm();setPage(2)'>Yes, Submit Form</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click='blank.submitForm();setPage(1)'>Yes, Submit Form</button>
           <button type="button" class="btn btn-primary" data-dismiss="modal">No, Continue to Edit</button>
         </div>
       </div>
@@ -41,19 +41,21 @@
 
 	<div class="container col-xs-offset-2 col-xs-10" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; ">
 
+		<h1> {{ name }} </h1>
+
 		<ul class="list-unstyled" id="sortable">
 		<div class="row" ng-repeat="question in formArr">
 			<li>
 				<div class="col-xs-8" style='margin-bottom: 20px'>
 					<label> {{question.title}} :  </label>
 					<div>
-						<input id='{{ question.title }}' ng-if='question.type == "textbox"'  type='text' class='form-control input-sm'></input>
-						<select id='{{ question.title }}' ng-if='question.type == "select"' class="form-control input-sm col-xs-2">
+						<input id='Question{{ $index }}' ng-if='question.type == "textbox"'  type='text' class='form-control input-sm'></input>
+						<select id='Question{{ $index }}' ng-if='question.type == "select"' class="form-control input-sm col-xs-2">
 							<option value="" disabled selected>--Select An Option--</option>
 						  <option ng-repeat='option in question.options'>{{ option }}</option>
 						</select>
 						<label ng-if='question.type == "checkbox"' ng-repeat='option in question.options' class="checkbox-inline">
-							<input id='{{ question.title }}' type="checkbox" value='{{ option }}'>
+							<input id='Question{{ $parent.$parent.$index }}' type="checkbox" value='{{ option }}'>
 							{{ option }}
 						</label>
 				  </div>
