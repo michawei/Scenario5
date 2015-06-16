@@ -106,12 +106,19 @@ angular.module('scenario5App').controller('ListViewController', ['$scope', '$htt
   	$scope.form_id = form_id;
   	$scope.dataArr = [];
   	$scope.tableArr = [];
+  	$scope.formArr = [];
+
+  	$http.get('/forms/' + $scope.form_id)
+  	.success(function(data) {
+  		$scope.formArr = data.form;
+  	});
+
   	$http.get('/data/' + $scope.form_id)
   	.success(function(data) {
   		if(data.length > 0) {
 	  		$scope.dataArr = data;
 	  	}
-  	  $scope.form_id = '';
+  	  //$scope.form_id = '';
   	});
   	$http.get('/header/' + $scope.form_id).
   	  success(function(data) {

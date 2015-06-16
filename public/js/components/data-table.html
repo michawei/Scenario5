@@ -2,7 +2,10 @@
 
 	<div class="container col-xs-12" style="margin-top:5%; margin-bottom:5%; border: 1px solid 000000; ">
 
-		<h5 class='pull-right'> 
+		<h5 class='pull-right'>
+		  <button type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>
+			  Add Column
+		  </button>
 		  <button type="button" class="btn btn-default btn-sm" ng-click=''>
 			  Undo
 		  </button>
@@ -15,12 +18,29 @@
 
 		<table class='table table-striped'>
       <tr>
-		    <th ng-repeat='tb in tableArr track by $index'> {{ tb }}</th>
+		    <th ng-repeat='tb in tableArr track by $index'>
+			  	<font ng-show='!formArr[$index].edit' ng-click="table.setTitle(formArr[$index], true, $index)">
+			    	{{ tb }}
+			    </font>
+			    <input ng-show='formArr[$index].edit' ng-model="formArr[$index].title" type="text" class="form-control input-sm" ng-blur="table.setTitle(formArr[$index], false, $index)" autofocus />
+		    </th>
 		    <th> Options </th>
 		  </tr>
 		  <tr ng-repeat='data in dataArr track by $index'>
-		  	<td ng-repeat='tb in tableArr track by $index'> 
-		      {{ data.data[$index].ans }} 
+		  	<td ng-repeat='tb in tableArr track by $index' class="col-xs-2">
+			  	<font ng-if="data.data[$index].type == 'textbox'" ng-show='!data.data[$index].edit' ng-click="table.setEdit(data.data[$index], true, $index)">
+			      {{ data.data[$index].ans }} 
+			    </font>
+			    <input ng-if="data.data[$index].type == 'textbox'" ng-show="data.data[$index].edit" ng-model="data.data[$index].ans" type="text" class="form-control input-sm" ng-blur="table.setEdit(data.data[$index], false, $index)" autofocus />
+				<select id='Question{{ $index }}' ng-if="data.data[$index].type == 'select'" class="form-control input-sm col-xs-2">
+					<option ng-selected="{{option == data.data[$index].ans}}" ng-repeat="option in data.data[$index].options">{{ option }}</option>
+				</select>
+
+				<!-- 有bug的地方，ng-repeat只有一個Q_Q I dont'know why -->
+				<li ng-if="data.data[$index].type == 'checkbox'" ng-repeat="option in data.data[$index].options" class="checkbox-inline">
+					<input id='Question{{ $parent.$parent.$index }}' type="checkbox" > {{ option }}
+				</li>
+				<input ng-if="data.data[$index].type == 'remark'" ng-model="data.data[$index].ans" type="text" class="form-control input-sm" ng-blur="table.setEdit(data.data[$index], false, $index)" autofocus />
 		    </td>
 		    <td> 
 		    	<button class="btn btn-info btn-xs" ng-click=''>
@@ -39,7 +59,7 @@
 			<span class="glyphicon glyphicon-menu-left" aria-hidden="true" ></span>
 		  Back
 		</button>
-		<button class="btn btn-primary btn-md" ng-click=''>
+		<button class="btn btn-primary btn-md" ng-click='table.saveData()'>
 			<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true" ></span>
 		  Save
 		</button>
