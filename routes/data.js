@@ -43,7 +43,6 @@ router.delete('/:id', function(req, res, next) {
   });
 });
 
-//add another delete method 
 
 module.exports = router;
 

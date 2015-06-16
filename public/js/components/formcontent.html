@@ -58,30 +58,35 @@
 
 	<div class="container col-xs-offset-2 col-xs-10" style="margin-top:5%; margin-left:5%; margin-right:5%; margin-bottom:5%; border: 1px solid 000000; ">
 		
-    <h2> {{ name }} </h2> 
-		<br>
+    <h2> 
+    	{{ name }} 
+    	<button type="button" class="btn btn-default btn-xs" data-dismiss="modal" ng-click='content.undo()'>Undo</button>
+			<button type="button" class="btn btn-default btn-xs" data-dismiss="modal" ng-click='content.redo()'>Redo</button>
+    </h2> 
+
+		<br> 
 
 		<ul class="list-unstyled" id="sortable">
-		<div class="row" ng-repeat="question in formArr">
-			<li ng-show="!question.edit" ng-click="content.setEdit(question,true)" class="col-xs-2" style='margin-right: 5px'>
+		<div class="row" ng-repeat="question in formArr track by $index">
+			<li ng-show="!question.edit" ng-click="content.setEdit(question,true,$index)" class="col-xs-2" style='margin-right: 5px'>
 				<h5> {{question.title}} : </h5>
 			</li>
 			<li ng-show="question.edit" class="col-xs-2" style='margin-right: 5px;'>
-				<input ng-model="content.question_new_title" type="text" class="form-control" placeholder="question title" ng-blur="content.setEdit(question, false)" autofocus/>
+				<input ng-model="content.question_new_title" type="text" class="form-control" placeholder="question title" ng-blur="content.setEdit(question, false,$index)" autofocus/>
 			</li>
 			<div class="col-xs-3">
 				<div ng-if='question.type == "textbox"'>
 					<input type='text' class='form-control input-sm'></input>
 				</div> 
 				<div ng-if='question.type == "select"'>
-					<input type='text' class='form-control input-sm' ng-repeat='option in question.options' ng-model='option' ng-blur='content.setOption($index, option, question)'style='margin-bottom: 5px;' autofocus></input>
-					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.addOptions(question)'> Add Options </button>
-					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.delOptions(question)'> Delete Options </button>
+					<input type='text' class='form-control input-sm' ng-repeat='option in question.options track by $index' ng-model='option' ng-blur='content.setOption($index, option, question, $parent.$index)'style='margin-bottom: 5px;' autofocus></input>
+					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.addOptions(question, $index)'> Add Options </button>
+					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.delOptions(question, $index)'> Delete Options </button>
 				</div> 
 				<div ng-if='question.type == "checkbox"'>
-					<input type='text' class='form-control input-sm' ng-repeat='option in question.options' ng-model='option' ng-blur='content.setOption($index, option, question)'style='margin-bottom: 5px;' autofocus></input>
-					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.addOptions(question)'> Add Options </button>
-					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.delOptions(question)'> Delete Options </button>
+					<input type='text' class='form-control input-sm' ng-repeat='option in question.options track by $index' ng-model='option' ng-blur='content.setOption($index, option, question)'style='margin-bottom: 5px;' autofocus></input>
+					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.addOptions(question, $index)'> Add Options </button>
+					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.delOptions(question, $index)'> Delete Options </button>
 				</div> 
 			</div>
 			<select class="form-control input-sm col-xs-2" ng-model="question.type">
@@ -93,15 +98,17 @@
 			<a href ng-style="{color: content.Scolor}" ng-mouseover='content.Scolor = "#a4a4a4"' ng-mouseleave='content.Scolor = "#d2d2d2"'>
 				<span style='margin-left:10px;' class="glyphicon glyphicon-sort" aria-hidden="false"></span>
 			</a>
-			<a href ng-click="delete_question(question);" ng-style="{color: content.Xcolor}" ng-mouseover='content.Xcolor = "#a4a4a4"' ng-mouseleave='content.Xcolor = "#d2d2d2"'>
+			<a href ng-click="content.delete_question(question);" ng-style="{color: content.Xcolor}" ng-mouseover='content.Xcolor = "#a4a4a4"' ng-mouseleave='content.Xcolor = "#d2d2d2"'>
 			  <span style='margin-left:10px;' class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 			</a>
 		</div>
 		</ul>
-		<botton type="botton" class="btn btn-primary btn-md" ng-click="add_question()"> 
+		<botton type="botton" class="btn btn-primary btn-md" ng-click="content.add_question()"> 
 			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 			Add 
 		</botton>
+		<button type="button" class="btn btn-default btn-xs" data-dismiss="modal" ng-click='content.undo()'>Undo</button>
+		<button type="button" class="btn btn-default btn-xs" data-dismiss="modal" ng-click='content.redo()'>Redo</button>
 		<span class='pull-right'>
 			<button ng-click='content.saveForm()' class="btn btn-success btn-md" data-toggle="modal" data-target="#saveModal">
 				<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>

@@ -71,6 +71,13 @@ angular.module('scenario5App').controller('ListViewController', ['$scope', '$htt
 		if(bool) {
 			$http.delete('/forms/' + $scope.id);
 			$scope.formsList.splice($scope.index, 1);
+			$http.get('/data/' + $scope.id).
+			  success(function(data) {
+			  	for (var i = 0; i < data.length; i++) {
+			  		$http.delete('/data/' + data[i]._id);
+			  	}
+			  });
+			$http.delete('/header/' + $scope.id);
 		}
 		this.del = false;
 		$scope.name = '';
@@ -83,6 +90,7 @@ angular.module('scenario5App').controller('ListViewController', ['$scope', '$htt
 		this.newFormName = '';
 		$http.post('/forms', { name : $scope.name }).success(function(data) {
 			$scope.formsList.push(data);
+			$http.post('/header', { 'formId': data._id });
 			$scope.name = data.name;
 			$scope.category =  data.category;
 			$scope.formArr =  data.form;
@@ -102,12 +110,13 @@ angular.module('scenario5App').controller('ListViewController', ['$scope', '$htt
   	.success(function(data) {
   		if(data.length > 0) {
 	  		$scope.dataArr = data;
-	  	  for(var i = 0; i < $scope.dataArr[0].data.length; i++) {
-	  	  	$scope.tableArr.push($scope.dataArr[0].data[i].question);
-	  	  }
 	  	}
   	  $scope.form_id = '';
   	});
+  	$http.get('/header/' + $scope.form_id).
+  	  success(function(data) {
+  	  	$scope.tableArr = data;
+  	  });
   	$scope.setPage(5);
   }
 

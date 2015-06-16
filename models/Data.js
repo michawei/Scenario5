@@ -5,6 +5,7 @@ var DataSchema = new mongoose.Schema({
 	formCategory: String,
 	formId: String,
 	data: Array,
+	status: {type: String, default: 'updated' },
 	date: { type: Date, default: Date.now },
 });
 

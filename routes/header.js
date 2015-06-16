@@ -1,46 +1,46 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var Forms = require('../models/Forms.js');
-var Data = require('../models/Data.js');
+var Headers = require('../models/Headers.js');
 
-/* GET forms listing. */
+/* GET header listing. */
 router.get('/', function(req, res, next) {
-  Forms.find(function (err, todos) {
+  Headers.find(function (err, todos) {
     if (err) return next(err);
     res.json(todos);
   });  
 });
 
-/* POST /forms */
+/* POST /header */
 router.post('/', function(req, res, next) {
-  Forms.create(req.body, function (err, post) {
+  Headers.create(req.body, function (err, post) {
     if (err) return next(err);
     res.json(post);
   });
 });
 
-/* GET /forms/:id 某個id的服務 */
+/* GET /header/:id 某個id的服務 */
 router.get('/:id', function(req, res, next) {
-  Forms.findById(req.params.id, function (err, post) {
+  Headers.find({ 'formId': req.params.id }, function (err, data) {
     if (err) return next(err);
-    res.json(post);
+    console.log(data[0].headers);
+    res.json(data[0].headers);
   });
 });
 
-/* PUT /forms/:id */
+/* PUT /header/:id */
 router.put('/:id', function(req, res, next) {
-  Forms.findByIdAndUpdate(req.params.id, req.body, function (err, post) {
+  Headers.findOneAndUpdate({ 'formId': req.params.id }, req.body, function (err, data) {
     if (err) return next(err);
-    res.json(post);
+    res.json(data);
   });
 });
 
-/* DELETE /forms/:id */
+/* DELETE /header/:id */
 router.delete('/:id', function(req, res, next) {
-  Forms.findByIdAndRemove(req.params.id, req.body, function (err, post) {
+  Headers.findOneAndRemove({ 'formId': req.params.id }, function (err, data) {
     if (err) return next(err);
-    res.json(post);
+    res.json(data);
   });
 });
 
