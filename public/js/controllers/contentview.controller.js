@@ -43,17 +43,9 @@ angular.module('scenario5App').controller('contentCtrl', ['$scope', '$http', 'S5
 		$http.get('/data/' + $scope.id).
 			success(function(data) {
 			 for (var i = 0; i < data.length; i++) {
-		 		for(var j = 0; j < headers.length; j++) {
-		 			if(data[i].data[j] != undefined) {
-		 			  var question = data[i].data[j].question;
-		 			  var index = headers.indexOf(question);
-		 			  if (index == -1) {
-		 			  	data[i].data.splice(j,1);
-		 			  } else if(index != j) {
-		 			  	var d = data[i].data.splice(j, 1)[0];
-		 			  	data[i].data.splice(index, 0, d);
-		 			  }
-		 			} 
+			 	var maxLength = Math.max(data[i].data.length, headers.length);
+		 		for(var j = 0; j < maxLength; j++) {
+
 		 		}
 		 		$http.put('/data/' + data[i]._id, {'data': data[i].data})
 	  	}
