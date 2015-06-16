@@ -4,6 +4,7 @@ angular.module('scenario5App').controller('contentCtrl', ['$scope', '$http', 'S5
 	this.Xcolor = '#D2D2D2';
 	this.Scolor = '#d2d2d2';
 	this.newFormName = '';
+	this.counter = 0;
 
 	this.add_question = function(){
 		$scope.formArr.push({"title":"click to edit", "edit": false, 'options': []});
@@ -19,16 +20,19 @@ angular.module('scenario5App').controller('contentCtrl', ['$scope', '$http', 'S5
 	};
 
 	this.setEdit = function(question,bool,index) {
-		question.edit = bool;
-		if(!bool) {
+		if(!bool && question.edit) {
+			question.edit = bool;
 			if (this.question_new_title != '') {
 				S5Service.pushToUndo({'command': 'setEdit', 'index': index, 'prevTitle': question.title, 'newTitle': this.question_new_title});
 			  question.title = this.question_new_title;
 			  this.question_new_title = '';
+			  this.counter--;
 		  }
-		} else {
+		} else if(bool && this.counter < 1) {
+			question.edit = bool;
 			if(question.title != "click to edit") {
 			  this.question_new_title = question.title;
+			  this.counter++;
 		  }
 		}
 	};
