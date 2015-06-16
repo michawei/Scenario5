@@ -43,11 +43,20 @@ angular.module('scenario5App').controller('contentCtrl', ['$scope', '$http', 'S5
 		$http.get('/data/' + $scope.id).
 			success(function(data) {
 			 for (var i = 0; i < data.length; i++) {
-			 	var maxLength = Math.max(data[i].data.length, headers.length);
-		 		for(var j = 0; j < maxLength; j++) {
-
+			 	var questionArr = [];
+			 	var newDataArr = [];
+		 		for(var j = 0; j < data[i].data.length; j++) {
+		 			questionArr.push(data[i].data[j].question);
 		 		}
-		 		$http.put('/data/' + data[i]._id, {'data': data[i].data})
+		 		for(var k = 0; k < headers.length; k++) {			
+		 			var index = questionArr.indexOf(headers[k]);
+		 			if(index != -1) {
+		 				newDataArr.push(data[i].data[index]);
+		 			} else {
+		 				newDataArr.push({'question': headers[k], 'ans' : null});
+		 			}
+		 		}
+		 		$http.put('/data/' + data[i]._id, {'data': newDataArr});
 	  	}
 		});
 	};
