@@ -118,13 +118,12 @@ angular.module('scenario5App').controller('ListViewController', ['$scope', '$htt
   		if(data.length > 0) {
 	  		$scope.dataArr = data;
 	  	}
-  	  //$scope.form_id = '';
   	});
   	$http.get('/header/' + $scope.form_id).
   	  success(function(data) {
   	  	$scope.tableArr = data;
+  	  	$scope.setPage(5);
   	  });
-  	$scope.setPage(5);
   }
 
 	this.labelHover = function(id, color) {
