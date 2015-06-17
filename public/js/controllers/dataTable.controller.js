@@ -2,13 +2,15 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 
 	this.new_data = '';
 	this.dataArr = [];
+	this.removed = [];
 
 	this.compute = false;
 	this.computing_input = '';
 
-	this.removeData = function(data_id, index) {
-		$http.delete('/data/' + data_id);
-		$scope.dataArr.splice(index, 1); 
+	this.removeData = function(data_id, index) { 
+		this.removed.push(data_id);
+		var data = $scope.dataArr.splice(index, 1);
+		S5Service.pushToUndo({'command': 'removeData', 'data': data, 'index': index});
 	};
 
 	this.goBack = function() {
@@ -32,11 +34,11 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 
 	}
 
-	this.setEdit = function(data, bool, index) {
+	this.setEdit = function(data, bool) {
 		if(!bool) {
 			data.edit = bool;
 			if (this.new_data != '') {
-				S5Service.pushToUndo({'command': 'setEdit', 'index': index, 'prevData': data.ans, 'newData': this.new_data});
+				S5Service.pushToUndo({'command': 'setEdit', 'data': data, 'prevData': data.ans, 'newData': this.new_data});
 			  data.ans = this.new_data;
 			  this.new_data = '';
 		  }
@@ -46,6 +48,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 			element.focus();
 		} else {
 			data.edit = bool;
+			this.new_data = data.ans;
 		}
 	};
 
@@ -55,6 +58,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		for (var i=0; i < $scope.dataArr.length; i++){
 			$scope.dataArr[i].data.push({"question": "Type title", "type": "remark", "ans": "", "options": [], "edit": false})
 		}
+		S5Service.pushToUndo({'command': 'addRemark'});
 	};
 
 	this.saveData = function(){
@@ -66,22 +70,24 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		for (var i = 0; i < $scope.dataArr.length; i++){
 			$http.put('/data/' + $scope.dataArr[i]._id, {'data': $scope.dataArr[i].data});
 		}
+
+		for (var j = 0; j < this.removed.length; j++) {
+			$http.delete('/data/' + this.removed[j]);
+		}
 	};
 
 	this.setSelect = function(d_index, q_index, question) {
 		var id = '#Question' + d_index + '-' + q_index;
-		console.log(id);
-		question.ans = angular.element(id).val();
-		console.log(question);
+		var data = angular.element(id).val()
+		S5Service.pushToUndo({'command': 'setSelect', 'id': id, 'prevData': question.ans, 'newData' : data, 'question': question});
+		question.ans = data;
 	};
 
 	this.listenForCalc = function(d_index, q_index, question) {
 		var id = '#Question' + d_index + '-' + q_index;
 		this.computing_input = id;
-		console.log(event.which);
 		if(event.which == 61) {
 			this.compute = true;
-			console.log('computing')
 		}else if (this.compute && event.which == 13) {
 			var numStr = $(id).val();
 			var numArr = [];
@@ -126,9 +132,31 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		  		numArr[k+1] = Number(numArr[k-1]) - Number(numArr[k+1]);
 		  		k++;
 		  	}
-		  	console.log(numArr);
 		  }
 		  return numArr[numArr.length - 1];
+		}
+	}
+
+	this.undo = function() {
+		var action = S5Service.popUndo();
+		if (action.command == 'removeData') {
+			$scope.dataArr.splice(action.index, 0, action.data[0]);
+		} else if (action.command == 'setTitle') {
+			for(var i = 0; i < $scope.dataArr.length; i++) {
+					$scope.dataArr[i].data[action.index].question = action.prevTitle;
+			}
+			$scope.tableArr[action.index] = action.prevTitle;
+		} else if (action.command == 'setEdit') {
+			action.data.ans = action.prevData;
+		} else if (action.command == 'addRemark') {
+			$scope.formArr.splice($scope.formArr.length-1, 1);
+		  $scope.tableArr.splice($scope.tableArr.length-1, 1);
+		  for (var i=0; i < $scope.dataArr.length; i++){
+			  $scope.dataArr[i].data.splice($scope.dataArr[i].data.length-1, 1);
+		  }
+		} else if (action.command == 'setSelect') {
+			angular.element(action.id).val(action.prevData);
+			action.question.ans = action.prevData;
 		}
 	}
 

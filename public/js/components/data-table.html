@@ -14,13 +14,14 @@
 	<div class="container col-xs-12" style="margin-top:5%; margin-bottom:5%; border: 1px solid 000000; ">
 
 		<h5 class='pull-right'>
+			<label>Search: <input ng-model="searchText"></label>
 		  <button type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>
 			  Add Column
 		  </button>
-		  <button type="button" class="btn btn-default btn-sm" ng-click=''>
+		  <button type="button" class="btn btn-default btn-sm" ng-click='table.undo()'>
 			  Undo
 		  </button>
-		  <button type="button" class="btn btn-default btn-sm" ng-click=''>
+		  <button type="button" class="btn btn-default btn-sm" ng-click='table.redo();'>
 			  Redo
 		  </button>
 		</h5>
@@ -37,20 +38,21 @@
 		    <th> Options </th>
 		  </tr>
 		  <tr ng-repeat='data in dataArr track by $index'>
-		  	<td ng-repeat='tb in tableArr track by $index' class="col-xs-2">
-			  	<font ng-if="data.data[$index].type == 'textbox'" ng-show='!data.data[$index].edit' ng-click="table.setEdit(data.data[$index], true, $index)">
-			      {{ data.data[$index].ans }} 
+		  	<td ng-repeat='data in data.data track by $index' class="col-xs-2">
+			  	<font ng-if="data.type == 'textbox'" ng-show='!data.edit' ng-click="table.setEdit(data, true, $index, $parent.$parent.$index)">
+			      {{ data.ans }} 
 			    </font>
-			    <input ng-if="data.data[$index].type == 'textbox'" ng-show="data.data[$index].edit" ng-model="data.data[$index].ans" type="text" class="form-control input-sm" ng-blur="table.setEdit(data.data[$index], false, $index)" autofocus />
-				<select id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.data[$index].type == 'select'" class="form-control input-sm col-xs-2" ng-blur='table.setSelect($parent.$parent.$index, $index, data.data[$parent.$index])'>
-					<option ng-selected="{{option == data.data[$parent.$index].ans}}" ng-repeat="option in data.data[$index].options">{{ option }}</option>
+			    <input ng-if="data.type == 'textbox'" ng-show="data.edit" ng-model="table.new_data" type="text" class="form-control input-sm" ng-blur="table.setEdit(data, false, $index, $parent.$parent.$index)" autofocus />
+
+				<select id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'select'" class="form-control input-sm col-xs-2" ng-blur='table.setSelect($parent.$parent.$index, $index, data)'>
+					<option ng-selected="{{option == data.ans}}" ng-repeat="option in data.options">{{ option }}</option>
 				</select>
 
-				<select id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.data[$index].type == 'checkbox'" ng-blur='table.setSelect($parent.$parent.$index, $index, data.data[$parent.$index])' multiple> 
-					<option ng-selected="{{data.data[$parent.$index].ans.indexOf(option) != -1}}" ng-repeat="option in data.data[$index].options">{{ option }}</option>
+				<select id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'checkbox'" ng-blur='table.setSelect($parent.$parent.$index, $index, data)' multiple> 
+					<option ng-selected="{{data.ans.indexOf(option) != -1}}" ng-repeat="option in data.options">{{ option }}</option>
 				</select>
 
-				<input id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.data[$index].type == 'remark'" ng-model="data.data[$index].ans" type="text" class="form-control input-sm" ng-keypress='table.listenForCalc($parent.$parent.$index, $index, data.data[$parent.$index])' ng-blur="table.setEdit(data.data[$index], false, $index)" autofocus />
+				<input id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'remark'" ng-model="data.ans" type="text" class="form-control input-sm" ng-keypress='table.listenForCalc($parent.$parent.$index, $index, data)' ng-blur="table.setEdit(data, false, $index)" autofocus />
 		    </td>
 		    <td> 
 		    	<button class="btn btn-danger btn-xs" ng-click='table.removeData(data._id, $index)'>
