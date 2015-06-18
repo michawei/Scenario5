@@ -14,7 +14,6 @@
 	<div class="container col-xs-12" style="margin-top:5%; margin-bottom:5%; border: 1px solid 000000; ">
 
 		<h5 class='pull-right'>
-			<label>Search: <input ng-model="searchText"></label>
 		  <button type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>
 			  Add Column
 		  </button>
@@ -34,6 +33,9 @@
 			    	{{ tb }}
 			    </font>
 			    <input ng-show='formArr[$index].edit' ng-model="formArr[$index].title" type="text" class="form-control input-sm" ng-blur="table.setTitle(formArr[$index], false, $index)" autofocus />
+			    <a href ng-click="table.delete_col($index, tb)">
+					  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+					</a>
 		    </th>
 		    <th> Options </th>
 		  </tr>

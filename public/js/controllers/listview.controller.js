@@ -60,6 +60,12 @@ angular.module('scenario5App').controller('ListViewController', ['$scope', '$htt
 		this.edit = true;
 	}
 
+	this.updateCurrTitle = function() {
+		$scope.name = this.newFormName;
+		$http.put('/forms/' + $scope.id, {'name': $scope.name});
+		this.newFormName = '';
+	}
+
 	this.delAlert = function(name, id, index) {
 		this.del = true;
 		$scope.name = name;

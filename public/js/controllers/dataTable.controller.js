@@ -61,6 +61,16 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		S5Service.pushToUndo({'command': 'addRemark'});
 	};
 
+	this.delete_col = function(index, colTitle){ 
+		var colArr = [];
+		$scope.tableArr.splice(index, 1);
+		for(var i = 0; i < $scope.dataArr.length; i++) {
+			colArr.push($scope.dataArr[i].data.splice(index, 1));
+		}
+		console.log(colArr);
+  	S5Service.pushToUndo({'command': 'delete_col', 'colArr': colArr, 'index': index, 'colTitle': colTitle});
+	};
+
 	this.saveData = function(){
 		
 		$http.put('/forms/' + $scope.form_id, {form: $scope.formArr});
@@ -133,7 +143,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		  		k++;
 		  	}
 		  }
-		  return numArr[numArr.length - 1];
+		  return numArr[numArr.length - 1];	
 		}
 	}
 
@@ -141,6 +151,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		var action = S5Service.popUndo();
 		if (action.command == 'removeData') {
 			$scope.dataArr.splice(action.index, 0, action.data[0]);
+			this.removed.splice(this.removed.length-1, 1);
 		} else if (action.command == 'setTitle') {
 			for(var i = 0; i < $scope.dataArr.length; i++) {
 					$scope.dataArr[i].data[action.index].question = action.prevTitle;
@@ -157,6 +168,40 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		} else if (action.command == 'setSelect') {
 			angular.element(action.id).val(action.prevData);
 			action.question.ans = action.prevData;
+		} else if (action.command == 'delete_col') {
+			$scope.tableArr.splice(action.index, 0, action.colTitle);
+		  for(var i = 0; i < $scope.dataArr.length; i++) {
+				$scope.dataArr[i].data.splice(action.index, 0, action.colArr[i][0]);
+			}
+		}
+	}
+
+	this.redo = function() {
+		var action = S5Service.popRedo();
+		if (action.command == 'removeData') {
+			$scope.dataArr.splice(action.index, 1);
+			this.removed.push(action.data);
+		} else if (action.command == 'setTitle') {
+			for(var i = 0; i < $scope.dataArr.length; i++) {
+					$scope.dataArr[i].data[action.index].question = action.newTitle;
+			}
+			$scope.tableArr[action.index] = action.prevTitle;
+		} else if (action.command == 'setEdit') {
+			action.data.ans = action.newData;
+		} else if (action.command == 'addRemark') {
+			$scope.formArr.push({"title": "Type title", "edit":false, "options":[], "type":"remark"})
+			$scope.tableArr.push('Type title')
+			for (var i=0; i < $scope.dataArr.length; i++){
+				$scope.dataArr[i].data.push({"question": "Type title", "type": "remark", "ans": "", "options": [], "edit": false})
+			}
+		} else if (action.command == 'setSelect') {
+			angular.element(action.id).val(action.newData);
+			action.question.ans = action.newData;
+		} else if (action.command == 'delete_col') {
+			$scope.tableArr.splice(action.index, 1);
+		  for(var i = 0; i < $scope.dataArr.length; i++) {
+				$scope.dataArr[i].data.splice(action.index, 1);
+			}
 		}
 	}
 

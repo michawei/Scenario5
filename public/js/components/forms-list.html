@@ -53,9 +53,11 @@
 		  </div>
 
 			<div class'contianer-fluid' style='padding-left: 30px; padding-right: 30px; margin-top:75px'>
+				<label class='pull-right'>Search: <input ng-model="search.name"></label>
+
 				<ul class='list-group col-xs-9 ' >
 
-					<a href ng-click='list.useForm(form.name,form.category,form.form,form._id)' class='list-group-item clearfix' ng-repeat='form in formsList'> 
+					<a href ng-click='list.useForm(form.name,form.category,form.form,form._id)' class='list-group-item clearfix' ng-repeat='form in formsList | filter:search:strict'> 
 						<small> [ FORM ]</small>  <b>{{ form.name }}</b>
 						<span class="pull-right">
 		          <button type="button" class="btn btn-default btn-sm" ng-click='list.editForm()' >
@@ -92,9 +94,10 @@
 			</div>
 
 			<div class'contianer-fluid' style='padding-left: 30px; padding-right: 30px; margin-top:75px'>
+				<label class='pull-right'>Search: <input ng-model="search.name"></label>
 				<ul class='list-group col-xs-9 ' >
 
-					<a href ng-click='list.getData(form._id)' class='list-group-item clearfix' ng-repeat='form in formsList'> 
+					<a href ng-click='list.getData(form._id)' class='list-group-item clearfix' ng-repeat='form in formsList | filter:search:strict'> 
 						<small> [ DATA ]</small> <b>{{ form.name }}</b>
 					</a>
 
