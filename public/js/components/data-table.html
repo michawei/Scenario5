@@ -13,14 +13,14 @@
 
 	<div class="container col-xs-12" style="margin-top:5%; margin-bottom:5%; border: 1px solid 000000; ">
 
-		<h5 class='pull-right'>
-		  <button ng-show='table.showEditView'  type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>
+		<h5 ng-show='table.showEditView' class='pull-right'>
+		  <button type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>
 			  Add Column
 		  </button>
-		  <button ng-show='table.showEditView'  type="button" class="btn btn-default btn-sm" ng-click='table.undo()'>
+		  <button type="button" class="btn btn-default btn-sm" ng-click='table.undo()'>
 			  Undo
 		  </button>
-		  <button ng-show='table.showEditView'  type="button" class="btn btn-default btn-sm" ng-click='table.redo();'>
+		  <button type="button" class="btn btn-default btn-sm" ng-click='table.redo();'>
 			  Redo
 		  </button>
 		</h5>
@@ -55,7 +55,7 @@
 					<option ng-selected="{{data.ans.indexOf(option) != -1}}" ng-repeat="option in data.options">{{ option }}</option>
 				</select>
 
-				<input id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'remark'" ng-model="data.ans" type="text" class="form-control input-sm" ng-keypress='table.listenForCalc($parent.$parent.$index, $index, data)' ng-blur="table.setEdit(data, false, $index)"/>
+				<input id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'remark'" ng-model="data.ans" type="text" class="form-control input-sm" ng-keypress='table.listenForCalc($parent.$parent.$index, $index, data, $event)' ng-blur="table.setEdit(data, false, $index)"/>
 		    </td>
 		    <td> 
 		    	<button class="btn btn-danger btn-xs" ng-click='table.removeData(data._id, $index)'>

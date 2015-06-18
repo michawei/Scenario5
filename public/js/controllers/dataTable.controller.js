@@ -9,6 +9,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 
 	this.calculating = false;
 	this.calcIndex = -1;
+	this.endIndex = [];
 
 	this.showEditView = false;
 
@@ -81,9 +82,12 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	this.setFunc = function(index) {
 		for (var i=0; i < $scope.dataArr.length; i++){
 			$scope.dataArr[i].data[index].ans = '=';
+			this.endIndex[i] = 1;
 		}
+		console.log(this.endIndex);
 		angular.element("#Question0-" + index).focus();
 		this.calculating = true;
+		this.compute = false;
 		this.calcIndex = index;
 	};
 
@@ -128,12 +132,13 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		question.ans = data;
 	};
 
-	this.listenForCalc = function(d_index, q_index, question) {
+	this.listenForCalc = function(d_index, q_index, question, event) {
 		var id = '#Question' + d_index + '-' + q_index;
 		this.computing_input = id;
 		if(event.which == 61) {
 			this.compute = true;
-		}else if (this.compute && event.which == 13) {
+			this.calculating = false;
+		} else if (this.compute && event.which == 13) {
 			var numStr = $(id).val();
 			var numArr = [];
 			numStr = numStr.replace( /\s/g, "");
@@ -142,10 +147,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 			question.ans = ans;
 			this.compute = false;
 		} else if (this.calculating) {
-			for (var i=1; i < $scope.dataArr.length; i++){
-				 var val = $scope.dataArr[i].data[this.calcIndex].ans;
-				 $scope.dataArr[i].data[this.calcIndex].ans = val + String.fromCharCode(event.which);
-		  } if (event.which == 13) {
+		  if (event.which == 13) {
 		  	this.calculating = false;
 				for (var i=0; i < $scope.dataArr.length; i++){
 					var numStr = $scope.dataArr[i].data[this.calcIndex].ans;
@@ -153,10 +155,20 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 					numStr = numStr.replace( /\s/g, "");
 					var ans = this.computeNum(numStr.slice(1), '+', '-');
 					$scope.dataArr[i].data[this.calcIndex].ans = ans;
-			  }
+			  } 
+			} else if (event.which == 8 || event.which == 46) {
+		  	for (var i=1; i < $scope.dataArr.length; i++){
+		  		var val = $scope.dataArr[i].data[this.calcIndex].ans;
+		  		$scope.dataArr[i].data[this.calcIndex].ans = val.substring(0, this.endIndex[i]);
+		    } 
+		  } else {
+		  	for (var i=1; i < $scope.dataArr.length; i++){
+		  		var val = $scope.dataArr[i].data[this.calcIndex].ans;
+					 $scope.dataArr[i].data[this.calcIndex].ans = val + String.fromCharCode(event.which);
+				  this.endIndex[i] = val.length;
+			  } 
 		  }
 		}
-
 	};
 
 	this.computeNum = function(numStr, sep1, sep2) {
