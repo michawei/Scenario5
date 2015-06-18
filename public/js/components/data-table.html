@@ -14,19 +14,19 @@
 	<div class="container col-xs-12" style="margin-top:5%; margin-bottom:5%; border: 1px solid 000000; ">
 
 		<h5 class='pull-right'>
-		  <button type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>
+		  <button ng-show='table.showEditView'  type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>
 			  Add Column
 		  </button>
-		  <button type="button" class="btn btn-default btn-sm" ng-click='table.undo()'>
+		  <button ng-show='table.showEditView'  type="button" class="btn btn-default btn-sm" ng-click='table.undo()'>
 			  Undo
 		  </button>
-		  <button type="button" class="btn btn-default btn-sm" ng-click='table.redo();'>
+		  <button ng-show='table.showEditView'  type="button" class="btn btn-default btn-sm" ng-click='table.redo();'>
 			  Redo
 		  </button>
 		</h5>
 
 
-		<table class='table table-striped'>
+		<table ng-show='table.showEditView' class='table table-striped'>
       <tr>
 		    <th ng-repeat='tb in tableArr track by $index'>
 			  	<font ng-show='!formArr[$index].edit' ng-click="table.setTitle(formArr[$index], true, $index)">
@@ -55,7 +55,7 @@
 					<option ng-selected="{{data.ans.indexOf(option) != -1}}" ng-repeat="option in data.options">{{ option }}</option>
 				</select>
 
-				<input id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'remark'" ng-model="data.ans" type="text" class="form-control input-sm" ng-keypress='table.listenForCalc($parent.$parent.$index, $index, data)' ng-blur="table.setEdit(data, false, $index)" autofocus />
+				<input id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'remark'" ng-model="data.ans" type="text" class="form-control input-sm" ng-keypress='table.listenForCalc($parent.$parent.$index, $index, data)' ng-blur="table.setEdit(data, false, $index)"/>
 		    </td>
 		    <td> 
 		    	<button class="btn btn-danger btn-xs" ng-click='table.removeData(data._id, $index)'>
@@ -66,6 +66,24 @@
 		  </tr>
 		</table>
 
+
+		<table ng-show='!table.showEditView' class='table table-bordered col-xs-9'>
+      <tr>
+		    <th ng-repeat='tb in tableArr track by $index'>
+			  	<font>
+			    	{{ tb }}
+			    </font>
+		    </th>
+		  </tr>
+		  <tr ng-repeat='data in dataArr track by $index'>
+		  	<td ng-repeat='data in data.data track by $index' class="col-xs-2">
+			  	<font>
+			      {{ data.ans }} 
+			    </font>
+		    </td>
+		  </tr>
+		</table>
+
 		<button class="btn btn-info btn-md" ng-click='table.goBack()'>
 			<span class="glyphicon glyphicon-menu-left" aria-hidden="true" ></span>
 		  Back
@@ -73,6 +91,10 @@
 		<button class="btn btn-primary btn-md" ng-click='table.saveData()' data-toggle="modal" data-target="#saveDataModal">
 			<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true" ></span>
 		  Save
+		</button>
+
+		<button class="btn btn-success btn-md pull-right" ng-click='table.editView()'>
+		  Switch Views
 		</button>
 
 	</div>

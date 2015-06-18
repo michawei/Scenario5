@@ -10,6 +10,16 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	this.calculating = false;
 	this.calcIndex = -1;
 
+	this.showEditView = false;
+
+	this.editView = function() {
+		if(this.showEditView) {
+			this.showEditView = false;
+		} else {
+			this.showEditView = true;
+		}
+	}
+
 	this.removeData = function(data_id, index) { 
 		this.removed.push(data_id);
 		var data = $scope.dataArr.splice(index, 1);
@@ -89,6 +99,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	this.delete_col = function(index, colTitle){ 
 		var colArr = [];
 		$scope.tableArr.splice(index, 1);
+		$scope.formArr.splice(index, 1);
 		for(var i = 0; i < $scope.dataArr.length; i++) {
 			colArr.push($scope.dataArr[i].data.splice(index, 1));
 		}

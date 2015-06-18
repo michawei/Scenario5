@@ -23,7 +23,6 @@ router.post('/', function(req, res, next) {
 router.get('/:id', function(req, res, next) {
   Headers.find({ 'formId': req.params.id }, function (err, data) {
     if (err) return next(err);
-    console.log(data[0].headers);
     res.json(data[0].headers);
   });
 });
