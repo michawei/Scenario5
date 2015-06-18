@@ -7,6 +7,9 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	this.compute = false;
 	this.computing_input = '';
 
+	this.calculating = false;
+	this.calcIndex = -1;
+
 	this.removeData = function(data_id, index) { 
 		this.removed.push(data_id);
 		var data = $scope.dataArr.splice(index, 1);
@@ -18,23 +21,30 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	};
 
 	this.setTitle = function(form, bool, index){
-		form.edit = bool;
-		if(form.title != ''){
-			if(!bool) {
-				for(var i = 0; i < $scope.dataArr.length; i++) {
-					$scope.dataArr[i].data[index].question = form.title;
+		if(this.calculating) {
+			for (var i=0; i < $scope.dataArr.length; i++){
+			 var val = $scope.dataArr[i].data[this.calcIndex].ans;
+			 $scope.dataArr[i].data[this.calcIndex].ans = val + $scope.dataArr[i].data[index].ans;
+			 angular.element("#Question0-" + this.calcIndex).focus();
+		  }
+		} else {
+			form.edit = bool;
+			if(form.title != ''){
+				if(!bool) {
+					for(var i = 0; i < $scope.dataArr.length; i++) {
+						$scope.dataArr[i].data[index].question = form.title;
+					}
+					S5Service.pushToUndo({'command': 'setTitle', 'form': form, 'index': index, 'prevTitle': $scope.tableArr[index], 'newTitle': form.title});
 				}
-				S5Service.pushToUndo({'command': 'setTitle', 'form': form, 'index': index, 'prevTitle': $scope.tableArr[index], 'newTitle': form.title});
+				$scope.tableArr[index] = form.title;		
 			}
-			$scope.tableArr[index] = form.title;		
+			else{
+				form.title = $scope.tableArr[index];
+			}
 		}
-		else{
-			form.title = $scope.tableArr[index];
-		}
+	};
 
-	}
-
-	this.setEdit = function(data, bool) {
+	this.setEdit = function(data, bool, index) {
 		if(!bool) {
 			data.edit = bool;
 			if (this.new_data != '') {
@@ -46,10 +56,25 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 			var element = angular.element(this.computing_input);
 			element.val(element.val() + data.ans);
 			element.focus();
-		} else {
+		} else if (this.calculating) {
+			for (var i=0; i < $scope.dataArr.length; i++){
+			  var val = $scope.dataArr[i].data[this.calcIndex].ans;
+			  $scope.dataArr[i].data[this.calcIndex].ans = val + $scope.dataArr[i].data[index].ans;
+			  angular.element("#Question0-" + this.calcIndex).focus();
+		  }
+		}else {
 			data.edit = bool;
 			this.new_data = data.ans;
 		}
+	};
+
+	this.setFunc = function(index) {
+		for (var i=0; i < $scope.dataArr.length; i++){
+			$scope.dataArr[i].data[index].ans = '=';
+		}
+		angular.element("#Question0-" + index).focus();
+		this.calculating = true;
+		this.calcIndex = index;
 	};
 
 	this.addRemark = function(){
@@ -67,7 +92,6 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		for(var i = 0; i < $scope.dataArr.length; i++) {
 			colArr.push($scope.dataArr[i].data.splice(index, 1));
 		}
-		console.log(colArr);
   	S5Service.pushToUndo({'command': 'delete_col', 'colArr': colArr, 'index': index, 'colTitle': colTitle});
 	};
 
@@ -106,46 +130,62 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 			angular.element(id).val(ans);
 			question.ans = ans;
 			this.compute = false;
+		} else if (this.calculating) {
+			for (var i=1; i < $scope.dataArr.length; i++){
+				 var val = $scope.dataArr[i].data[this.calcIndex].ans;
+				 $scope.dataArr[i].data[this.calcIndex].ans = val + String.fromCharCode(event.which);
+		  } if (event.which == 13) {
+		  	this.calculating = false;
+				for (var i=0; i < $scope.dataArr.length; i++){
+					var numStr = $scope.dataArr[i].data[this.calcIndex].ans;
+					var numArr = [];
+					numStr = numStr.replace( /\s/g, "");
+					var ans = this.computeNum(numStr.slice(1), '+', '-');
+					$scope.dataArr[i].data[this.calcIndex].ans = ans;
+			  }
+		  }
 		}
 
-		this.computeNum = function(numStr, sep1, sep2) {
-			var numArr = [];
-			var start = 0;
-			var retNum = 0
-		  for(var i = 0; i < numStr.length; i++) {
-		  	if(numStr[i] == sep1 || numStr[i] == sep2) {
-		  		numArr.push(numStr.slice(start,i));
-		  		numArr.push(numStr[i]);
-		  		start = i + 1;
-		  	} 
-		  }
-		  numArr.push(numStr.slice(start));
+	};
 
-		  for(var j = 0; j < numArr.length; j++) {
-		  	if(numArr[j].length > 1) {
-		  	  if(!Number(numArr[j])) {
-		  	    numArr[j] = this.computeNum(numArr[j], '*', '/');
-		  	  }
-		  	} 
-		  }
-		  for(var k = 0; k < numArr.length; k++) {
-		  	if(numArr[k] == '*') {
-		  		numArr[k+1] = Number(numArr[k-1]) * Number(numArr[k+1]);
-		  		k++;
-		  	} else if(numArr[k] == '/') {
-		  		numArr[k+1] = Number(numArr[k-1]) / Number(numArr[k+1]);
-		  		k++;
-		  	} else if(numArr[k] == '+') {
-		  		numArr[k+1] = Number(numArr[k-1]) + Number(numArr[k+1]);
-		  		k++;
-		  	} else if(numArr[k] == '-') {
-		  		numArr[k+1] = Number(numArr[k-1]) - Number(numArr[k+1]);
-		  		k++;
-		  	}
-		  }
-		  return numArr[numArr.length - 1];	
-		}
-	}
+	this.computeNum = function(numStr, sep1, sep2) {
+		var numArr = [];
+		var start = 0;
+		var retNum = 0
+	  for(var i = 0; i < numStr.length; i++) {
+	  	if(numStr[i] == sep1 || numStr[i] == sep2) {
+	  		numArr.push(numStr.slice(start,i));
+	  		numArr.push(numStr[i]);
+	  		start = i + 1;
+	  	} 
+	  }
+	  numArr.push(numStr.slice(start));
+
+	  for(var j = 0; j < numArr.length; j++) {
+	  	if(numArr[j].length > 1) {
+	  	  if(!Number(numArr[j])) {
+	  	    numArr[j] = this.computeNum(numArr[j], '*', '/');
+	  	  }
+	  	} 
+	  }
+	  for(var k = 0; k < numArr.length; k++) {
+	  	if(numArr[k] == '*') {
+	  		numArr[k+1] = Number(numArr[k-1]) * Number(numArr[k+1]);
+	  		k++;
+	  	} else if(numArr[k] == '/') {
+	  		numArr[k+1] = Number(numArr[k-1]) / Number(numArr[k+1]);
+	  		k++;
+	  	} else if(numArr[k] == '+') {
+	  		numArr[k+1] = Number(numArr[k-1]) + Number(numArr[k+1]);
+	  		k++;
+	  	} else if(numArr[k] == '-') {
+	  		numArr[k+1] = Number(numArr[k-1]) - Number(numArr[k+1]);
+	  		k++;
+	  	}
+	  }
+	  return numArr[numArr.length - 1];	
+	};
+
 
 	this.undo = function() {
 		var action = S5Service.popUndo();

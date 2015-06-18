@@ -33,6 +33,7 @@
 			    	{{ tb }}
 			    </font>
 			    <input ng-show='formArr[$index].edit' ng-model="formArr[$index].title" type="text" class="form-control input-sm" ng-blur="table.setTitle(formArr[$index], false, $index)" autofocus />
+			    <a href ng-show='formArr[$index].type == "remark"' ng-click='table.setFunc($index)'> func </a>
 			    <a href ng-click="table.delete_col($index, tb)">
 					  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 					</a>
