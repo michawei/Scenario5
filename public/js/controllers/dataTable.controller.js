@@ -82,7 +82,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	this.setFunc = function(index) {
 		for (var i=0; i < $scope.dataArr.length; i++){
 			$scope.dataArr[i].data[index].ans = '=';
-			this.endIndex[i] = 1;
+			this.endIndex[i] = [1];
 		}
 		console.log(this.endIndex);
 		angular.element("#Question0-" + index).focus();
@@ -159,13 +159,13 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 			} else if (event.which == 8 || event.which == 46) {
 		  	for (var i=1; i < $scope.dataArr.length; i++){
 		  		var val = $scope.dataArr[i].data[this.calcIndex].ans;
-		  		$scope.dataArr[i].data[this.calcIndex].ans = val.substring(0, this.endIndex[i]);
+		  		$scope.dataArr[i].data[this.calcIndex].ans = val.substring(0, this.endIndex[i].pop());
 		    } 
 		  } else {
 		  	for (var i=1; i < $scope.dataArr.length; i++){
 		  		var val = $scope.dataArr[i].data[this.calcIndex].ans;
 					 $scope.dataArr[i].data[this.calcIndex].ans = val + String.fromCharCode(event.which);
-				  this.endIndex[i] = val.length;
+				  this.endIndex[i].push(val.length);
 			  } 
 		  }
 		}
