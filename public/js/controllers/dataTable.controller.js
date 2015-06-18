@@ -84,7 +84,6 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 			$scope.dataArr[i].data[index].ans = '=';
 			this.endIndex[i] = [1];
 		}
-		console.log(this.endIndex);
 		angular.element("#Question0-" + index).focus();
 		this.calculating = true;
 		this.compute = false;
