@@ -28,6 +28,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	};
 
 	this.goBack = function() {
+		S5Service.clearStacks();
 		$scope.setPage(4);
 	};
 
@@ -132,6 +133,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	};
 
 	this.listenForCalc = function(d_index, q_index, question, event) {
+		console.log('key pressed: ' + event.which);
 		var id = '#Question' + d_index + '-' + q_index;
 		this.computing_input = id;
 		if(event.which == 61) {
@@ -157,14 +159,18 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 			  } 
 			} else if (event.which == 8 || event.which == 46) {
 		  	for (var i=1; i < $scope.dataArr.length; i++){
+		  		console.log('deleted');
 		  		var val = $scope.dataArr[i].data[this.calcIndex].ans;
 		  		$scope.dataArr[i].data[this.calcIndex].ans = val.substring(0, this.endIndex[i].pop());
+		  		if(this.endIndex[i].length == 0) {
+		  			this.endIndex[i].push(1);
+		  		}
 		    } 
 		  } else {
 		  	for (var i=1; i < $scope.dataArr.length; i++){
 		  		var val = $scope.dataArr[i].data[this.calcIndex].ans;
 					 $scope.dataArr[i].data[this.calcIndex].ans = val + String.fromCharCode(event.which);
-				  this.endIndex[i].push(val.length);
+				  this.endIndex[i].push(val.length+1);
 			  } 
 		  }
 		}

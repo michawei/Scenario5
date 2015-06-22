@@ -87,7 +87,7 @@
 		<ul class="list-unstyled" id="sortable">
 		<div class="row" ng-repeat="question in formArr track by $index">
 			<li ng-show="!question.edit" ng-click="content.setEdit(question,true,$index)" class="col-xs-2" style='margin-right: 5px'>
-				<h5> {{question.title}} : </h5>
+				<h5 ng-if='question.type != "remark"'> {{question.title}} : </h5>
 			</li>
 			<li ng-show="question.edit" class="col-xs-2" style='margin-right: 5px;'>
 				<input ng-model="content.question_new_title" type="text" class="form-control" placeholder="question title" ng-blur="content.setEdit(question, false,$index)" autofocus/>
@@ -107,16 +107,16 @@
 					<button class='btn btn-default btn-xs pull-right' style='margin: 5px' ng-click='content.delOptions(question, $index)'> Delete Options </button>
 				</div> 
 			</div>
-			<select class="form-control input-sm col-xs-2" ng-model="question.type">
+			<select ng-if='question.type != "remark"' class="form-control input-sm col-xs-2" ng-model="question.type">
 				<option value="" disabled selected>--Select Input Type--</option>
 			  <option value="textbox">TextBox</option>
 			  <option value="select">Select</option>
 			  <option value="checkbox">Check Box</option>
 			</select>
-			<a href ng-style="{color: content.Scolor}" ng-mouseover='content.Scolor = "#a4a4a4"' ng-mouseleave='content.Scolor = "#d2d2d2"'>
+			<a href ng-if='question.type != "remark"' ng-style="{color: content.Scolor}" ng-mouseover='content.Scolor = "#a4a4a4"' ng-mouseleave='content.Scolor = "#d2d2d2"'>
 				<span style='margin-left:10px;' class="glyphicon glyphicon-sort" aria-hidden="false"></span>
 			</a>
-			<a href ng-click="content.delete_question(question);" ng-style="{color: content.Xcolor}" ng-mouseover='content.Xcolor = "#a4a4a4"' ng-mouseleave='content.Xcolor = "#d2d2d2"'>
+			<a href ng-if='question.type != "remark"' ng-click="content.delete_question(question);" ng-style="{color: content.Xcolor}" ng-mouseover='content.Xcolor = "#a4a4a4"' ng-mouseleave='content.Xcolor = "#d2d2d2"'>
 			  <span style='margin-left:10px;' class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 			</a>
 		</div>
