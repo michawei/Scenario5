@@ -13,6 +13,82 @@
 
 	<div class="container col-xs-12" style="margin-top:5%; margin-bottom:5%; border: 1px solid 000000; ">
 
+	 <div ng-controller="ChartCtrl as chart" style='margin-top:5px; margin-bottom:5px; border: 1px;'>
+		<button class="btn btn-xs btn-default" data-toggle='modal' data-target='#chartModal'>View Charts</button>
+      <!--Modal-->
+		  <div class="modal fade" id="chartModal">
+	    	<div class="modal-dialog modal-lg">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	                <button ng-hide='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(true, options.chart)'>Settings</button>
+	                <button ng-show='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(false)'>
+	            			Hide Settings
+	            	  </button>
+
+	            	  <!--Chart Settings-->
+	            	<div ng-show='chart.settings'>
+	            		<form class='form-inline' ng-submit='chart.setRange(chart.minY, chart.maxY)'>
+	            			<div class='form-group form-group-sm'>
+	            				<label> Y-Axis Range </label>
+	            				<input type='text' ng-model='chart.minY'/> - <input type='text' ng-model='chart.maxY'>
+	            				<button type="submit" class="btn btn-xs btn-default">Set Range</button>
+	            			</div>
+	            		</form>
+
+	            		<form class='form-inline' ng-submit='chart.setDomain(chart.minX, chart.maxX'>
+	            			<div class='form-group form-group-sm'>
+	            				<label> X-Axis Domain </label>
+	            				<input type='text' ng-model='chart.minX'/> - <input type='text' ng-model='chart.maxX'>
+	            				<button type="submit" class="btn btn-xs btn-default">Set Domain</button>
+	            			</div>
+	            		</form>
+	            	</div>
+	            </div>
+	            <div class="modal-body">
+
+	            	
+
+	            	<!--Chart + Generation-->
+	            	<div >
+		            	<nvd3 options="options" data="graphData"></nvd3>
+
+		            	<form class="form-inline" ng-submit='chart.generateChart(chart.type, chart.x_index, chart.y_index, chart.z_index)'>
+		            		<div class='form-group'>
+									  	<label>Chart Type</label>
+									  	<select class="form-control" ng-model='chart.type'>
+											  <option ng-repeat='chart_opt in chart.charts' ng-value='{{$index}}' >{{ chart_opt.type }}</option>
+											</select>
+									  </div>
+									  <div ng-hide='chart.type == undefined' class="form-group form-group-sm">
+									    <label>{{ chart.charts[chart.type].x }}</label>
+									    <select  ng-hide='chart.charts[chart.type].x == undefined' class="form-control" ng-model='chart.x_index'>
+											  <option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
+											</select>
+									  </div>
+									  <div ng-hide='chart.type == undefined' class="form-group form-group-sm">
+									    <label>{{ chart.charts[chart.type].y }} </label>
+									    <select ng-hide='chart.charts[chart.type].y == undefined' class="form-control" ng-model='chart.y_index'>
+											  <option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
+											</select>
+									  </div>
+									  <div ng-hide='chart.type == undefined' class="form-group form-group-sm">
+									    <label>{{ chart.charts[chart.type].z }} </label>
+									    <select ng-hide='chart.charts[chart.type].z == undefined' class="form-control" ng-model='chart.z_index'>
+											  <option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
+											</select>
+									  </div>
+									  <button type="submit" class="btn btn-xs btn-default">Generate Chart</button>
+									</form>
+								</div>
+	            </div>
+            <div class="modal-footer">
+            </div>
+	        </div>
+	    </div>
+    </div>
+	</div>
+
 		<h5 ng-show='table.showEditView' class='pull-right'>
 		  <button type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>
 			  Add Column
@@ -96,7 +172,5 @@
 		<button class="btn btn-success btn-md pull-right" ng-click='table.editView()'>
 		  Switch Views
 		</button>
-
-	</div>
 
 </div>

@@ -1,1 +1,1 @@
-angular.module('scenario5App', ['ngDragDrop']);
+angular.module('scenario5App', ['ngDragDrop' ,'nvd3']);

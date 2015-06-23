@@ -9,7 +9,6 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 
 	this.calculating = false;
 	this.calcIndex = -1;
-	this.endIndex = [];
 
 	this.showEditView = false;
 
@@ -36,7 +35,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		if(this.calculating) {
 			for (var i=0; i < $scope.dataArr.length; i++){
 			 var val = $scope.dataArr[i].data[this.calcIndex].ans;
-			 $scope.dataArr[i].data[this.calcIndex].ans = val + $scope.dataArr[i].data[index].ans;
+			 $scope.dataArr[i].data[this.calcIndex].ans = val + 'col:' + index;
 			 angular.element("#Question0-" + this.calcIndex).focus();
 		  }
 		} else {
@@ -56,13 +55,23 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		}
 	};
 
-	this.setEdit = function(data, bool, index) {
+	this.setEdit = function(data, bool, index, d_index) {
 		if(!bool) {
 			data.edit = bool;
 			if (this.new_data != '') {
 				S5Service.pushToUndo({'command': 'setEdit', 'data': data, 'prevData': data.ans, 'newData': this.new_data});
 			  data.ans = this.new_data;
 			  this.new_data = '';
+			  if(data.inFunc != undefined) {
+			  	var func = $scope.dataArr[d_index].data[data.inFunc].func;
+					var colReg = /col:(\d+)/;
+					while (colReg.test(func)) {
+						var index = colReg.exec(func)[1];
+						func = func.replace(colReg, $scope.dataArr[d_index].data[index].ans);
+					}
+					var ans = this.computeNum(func.slice(1));
+					$scope.dataArr[d_index].data[data.inFunc].ans = ans;
+			  }
 		  }
 		} else if (this.compute && !isNaN(data.ans)) {
 			var element = angular.element(this.computing_input);
@@ -71,7 +80,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		} else if (this.calculating) {
 			for (var i=0; i < $scope.dataArr.length; i++){
 			  var val = $scope.dataArr[i].data[this.calcIndex].ans;
-			  $scope.dataArr[i].data[this.calcIndex].ans = val + $scope.dataArr[i].data[index].ans;
+			  $scope.dataArr[i].data[this.calcIndex].ans = val + 'col:' + index;
 			  angular.element("#Question0-" + this.calcIndex).focus();
 		  }
 		}else {
@@ -83,7 +92,6 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	this.setFunc = function(index) {
 		for (var i=0; i < $scope.dataArr.length; i++){
 			$scope.dataArr[i].data[index].ans = '=';
-			this.endIndex[i] = [1];
 		}
 		angular.element("#Question0-" + index).focus();
 		this.calculating = true;
@@ -130,10 +138,19 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		var data = angular.element(id).val()
 		S5Service.pushToUndo({'command': 'setSelect', 'id': id, 'prevData': question.ans, 'newData' : data, 'question': question});
 		question.ans = data;
+		if(question.inFunc != undefined) {
+	  	var func = $scope.dataArr[d_index].data[question.inFunc].func;
+			var colReg = /col:(\d+)/;
+			while (colReg.test(func)) {
+				var index = colReg.exec(func)[1];
+				func = func.replace(colReg, $scope.dataArr[d_index].data[index].ans);
+			}
+			var ans = this.computeNum(func.slice(1));
+			$scope.dataArr[d_index].data[question.inFunc].ans = ans;
+		}
 	};
 
 	this.listenForCalc = function(d_index, q_index, question, event) {
-		console.log('key pressed: ' + event.which);
 		var id = '#Question' + d_index + '-' + q_index;
 		this.computing_input = id;
 		if(event.which == 61) {
@@ -143,7 +160,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 			var numStr = $(id).val();
 			var numArr = [];
 			numStr = numStr.replace( /\s/g, "");
-			var ans = this.computeNum(numStr.slice(1), '+', '-');
+			var ans = this.computeNum(numStr.slice(1));
 			angular.element(id).val(ans);
 			question.ans = ans;
 			this.compute = false;
@@ -154,64 +171,70 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 					var numStr = $scope.dataArr[i].data[this.calcIndex].ans;
 					var numArr = [];
 					numStr = numStr.replace( /\s/g, "");
-					var ans = this.computeNum(numStr.slice(1), '+', '-');
+					$scope.dataArr[i].data[this.calcIndex].func = numStr;
+					var colReg = /col:(\d+)/;
+					while (colReg.test(numStr)) {
+						var index = colReg.exec(numStr)[1];
+						//console.log(a);
+						numStr = numStr.replace(colReg, $scope.dataArr[i].data[index].ans);
+						$scope.dataArr[i].data[index].inFunc = this.calcIndex;
+					}
+					var ans = this.computeNum(numStr.slice(1));
 					$scope.dataArr[i].data[this.calcIndex].ans = ans;
 			  } 
 			} else if (event.which == 8 || event.which == 46) {
 		  	for (var i=1; i < $scope.dataArr.length; i++){
 		  		console.log('deleted');
 		  		var val = $scope.dataArr[i].data[this.calcIndex].ans;
-		  		$scope.dataArr[i].data[this.calcIndex].ans = val.substring(0, this.endIndex[i].pop());
-		  		if(this.endIndex[i].length == 0) {
-		  			this.endIndex[i].push(1);
-		  		}
+		  		$scope.dataArr[i].data[this.calcIndex].ans = val.substring(0, val.length-1);
 		    } 
 		  } else {
 		  	for (var i=1; i < $scope.dataArr.length; i++){
 		  		var val = $scope.dataArr[i].data[this.calcIndex].ans;
 					 $scope.dataArr[i].data[this.calcIndex].ans = val + String.fromCharCode(event.which);
-				  this.endIndex[i].push(val.length+1);
 			  } 
 		  }
 		}
 	};
 
-	this.computeNum = function(numStr, sep1, sep2) {
-		var numArr = [];
-		var start = 0;
-		var retNum = 0
-	  for(var i = 0; i < numStr.length; i++) {
-	  	if(numStr[i] == sep1 || numStr[i] == sep2) {
-	  		numArr.push(numStr.slice(start,i));
-	  		numArr.push(numStr[i]);
-	  		start = i + 1;
-	  	} 
-	  }
-	  numArr.push(numStr.slice(start));
+	this.computeNum = function(numStr) {
+		var retVal;
+		var pareg = /\(.+\)/;
 
-	  for(var j = 0; j < numArr.length; j++) {
-	  	if(numArr[j].length > 1) {
-	  	  if(!Number(numArr[j])) {
-	  	    numArr[j] = this.computeNum(numArr[j], '*', '/');
-	  	  }
-	  	} 
-	  }
-	  for(var k = 0; k < numArr.length; k++) {
-	  	if(numArr[k] == '*') {
-	  		numArr[k+1] = Number(numArr[k-1]) * Number(numArr[k+1]);
-	  		k++;
-	  	} else if(numArr[k] == '/') {
-	  		numArr[k+1] = Number(numArr[k-1]) / Number(numArr[k+1]);
-	  		k++;
-	  	} else if(numArr[k] == '+') {
-	  		numArr[k+1] = Number(numArr[k-1]) + Number(numArr[k+1]);
-	  		k++;
-	  	} else if(numArr[k] == '-') {
-	  		numArr[k+1] = Number(numArr[k-1]) - Number(numArr[k+1]);
-	  		k++;
-	  	}
-	  }
-	  return numArr[numArr.length - 1];	
+		while (pareg.test(numStr)) {
+			var ans = pareg.exec(numStr);
+			ans[0] = ans[0].replace(/\(/g, "");
+			ans[0] = ans[0].replace(/\)/g, "");
+			numStr = numStr.replace(pareg, this.computeNum(ans[0])); 
+		}
+
+		var powReg = /([0-9]+)\^([0-9]+)/;
+		while (powReg.test(numStr)) {
+			var ans = powReg.exec(numStr);
+			numStr = numStr.replace(powReg, Math.pow(Number(ans[1]), Number(ans[2])));
+		}
+		var muldivReg = /([0-9]+)(\*|\/)([0-9]+)/;
+		while (muldivReg.test(numStr)) {
+			var ans = muldivReg.exec(numStr);
+			if (ans[2] == '*') {
+				retVal = Number(ans[1]) * Number(ans[3]);
+			} else if (ans[2] == '/') {
+				retVal = Number(ans[1]) / Number(ans[3]);
+			}
+			numStr = numStr.replace(muldivReg, retVal);
+		}
+
+		var addsubReg = /([0-9]+)(\+|\-)([0-9]+)/;
+		while (addsubReg.test(numStr)) {
+			var ans = addsubReg.exec(numStr);
+			if (ans[2] == '+') {
+				retVal = Number(ans[1]) + Number(ans[3]);
+			} else if (ans[2] == '-') {
+				retVal = Number(ans[1]) - Number(ans[3]);
+			}
+			numStr = numStr.replace(addsubReg, retVal);
+		}
+		return numStr;
 	};
 
 
