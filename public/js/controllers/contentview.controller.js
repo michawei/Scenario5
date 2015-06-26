@@ -169,10 +169,3 @@ angular.module('scenario5App').controller('contentCtrl', ['$scope', '$http', 'S5
   };
 
 }]);
-
-angular.module('scenario5App').directive("contentView", function(){
-	return{
-		restrict: 'AE',
-		templateUrl: "/js/components/formcontent.html",
-	};
-});

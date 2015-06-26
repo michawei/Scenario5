@@ -1,176 +1,159 @@
 <div ng-show='page == 5' ng-controller='DataTableController as table'> 
 
 	<!-- Modal -->
-  <div class="modal fade" id="saveDataModal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-body">
-        	You have saved the current data.
-        </div>
-      </div>
-    </div>
-  </div>
+	<div class="modal fade" id="saveDataModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-body">
+					You have saved the current data.
+				</div><!-- /modal-body -->
+			</div><!-- /modal-content -->
+		</div><!-- /modal-dialog -->
+	</div><!-- /modal -->
 
-	<div class="container col-xs-12" style="margin-top:5%; margin-bottom:5%; border: 1px solid 000000; ">
+	<!-- Chart -->
+	<div class="container col-xs-12" id='chart'>
+		<div ng-controller="ChartCtrl as chart" id="chartController">
+			<button class="btn btn-xs btn-default" data-toggle='modal' data-target='#chartModal'>View Charts</button>
+			<!-- Chart Modal -->
+			<div class="modal fade" id="chartModal">
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
 
-	 <div ng-controller="ChartCtrl as chart" style='margin-top:5px; margin-bottom:5px; border: 1px;'>
-		<button class="btn btn-xs btn-default" data-toggle='modal' data-target='#chartModal'>View Charts</button>
-      <!--Modal-->
-		  <div class="modal fade" id="chartModal">
-	    	<div class="modal-dialog modal-lg">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	                <button ng-hide='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(true, options.chart)'>Settings</button>
-	                <button ng-show='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(false)'>
-	            			Hide Settings
-	            	  </button>
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<button ng-hide='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(true, options.chart)'>Settings</button>
+							<button ng-show='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(false)'>Hide Settings</button>
+							<!-- Chart Settings -->
+							<div ng-show='chart.settings'>
+								<form class='form-inline' ng-submit='chart.setRange(chart.minY, chart.maxY)'>
+									<div class='form-group form-group-sm'>
+										<label> Y-Axis Range </label>
+										<input type='text' ng-model='chart.minY'/> - <input type='text' ng-model='chart.maxY'>
+										<button type="submit" class="btn btn-xs btn-default">Set Range</button>
+									</div>
+								</form>
 
-	            	  <!--Chart Settings-->
-	            	<div ng-show='chart.settings'>
-	            		<form class='form-inline' ng-submit='chart.setRange(chart.minY, chart.maxY)'>
-	            			<div class='form-group form-group-sm'>
-	            				<label> Y-Axis Range </label>
-	            				<input type='text' ng-model='chart.minY'/> - <input type='text' ng-model='chart.maxY'>
-	            				<button type="submit" class="btn btn-xs btn-default">Set Range</button>
-	            			</div>
-	            		</form>
+								<form class='form-inline' ng-submit='chart.setDomain(chart.minX, chart.maxX)'>
+									<div class='form-group form-group-sm'>
+										<label> X-Axis Domain </label>
+										<input type='text' ng-model='chart.minX'/> - <input type='text' ng-model='chart.maxX'>
+										<button type="submit" class="btn btn-xs btn-default">Set Domain</button>
+									</div>
+								</form>
+							</div><!-- /Chart Settings -->
+						</div><!-- /modal-header -->
 
-	            		<form class='form-inline' ng-submit='chart.setDomain(chart.minX, chart.maxX'>
-	            			<div class='form-group form-group-sm'>
-	            				<label> X-Axis Domain </label>
-	            				<input type='text' ng-model='chart.minX'/> - <input type='text' ng-model='chart.maxX'>
-	            				<button type="submit" class="btn btn-xs btn-default">Set Domain</button>
-	            			</div>
-	            		</form>
-	            	</div>
-	            </div>
-	            <div class="modal-body">
-
-	            	
-
-	            	<!--Chart + Generation-->
-	            	<div >
-		            	<nvd3 options="options" data="graphData"></nvd3>
-
-		            	<form class="form-inline" ng-submit='chart.generateChart(chart.type, chart.x_index, chart.y_index, chart.z_index)'>
-		            		<div class='form-group'>
-									  	<label>Chart Type</label>
-									  	<select class="form-control" ng-model='chart.type'>
-											  <option ng-repeat='chart_opt in chart.charts' ng-value='{{$index}}' >{{ chart_opt.type }}</option>
-											</select>
-									  </div>
-									  <div ng-hide='chart.type == undefined' class="form-group form-group-sm">
-									    <label>{{ chart.charts[chart.type].x }}</label>
-									    <select  ng-hide='chart.charts[chart.type].x == undefined' class="form-control" ng-model='chart.x_index'>
-											  <option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
-											</select>
-									  </div>
-									  <div ng-hide='chart.type == undefined' class="form-group form-group-sm">
-									    <label>{{ chart.charts[chart.type].y }} </label>
-									    <select ng-hide='chart.charts[chart.type].y == undefined' class="form-control" ng-model='chart.y_index'>
-											  <option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
-											</select>
-									  </div>
-									  <div ng-hide='chart.type == undefined' class="form-group form-group-sm">
-									    <label>{{ chart.charts[chart.type].z }} </label>
-									    <select ng-hide='chart.charts[chart.type].z == undefined' class="form-control" ng-model='chart.z_index'>
-											  <option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
-											</select>
-									  </div>
-									  <button type="submit" class="btn btn-xs btn-default">Generate Chart</button>
-									</form>
+	            		<div class="modal-body">
+							<!--Chart + Generation-->
+							<nvd3 options="options" data="graphData"></nvd3>
+							<form class="form-inline" ng-submit='chart.generateChart(chart.type, chart.x_index, chart.y_index, chart.z_index)'>
+								<div class='form-group'>
+									<label>Chart Type</label>
+									<select class="form-control" ng-model='chart.type'>
+										<option ng-repeat='chart_opt in chart.charts' ng-value='{{$index}}' >{{ chart_opt.type }}</option>
+									</select>
 								</div>
-	            </div>
-            <div class="modal-footer">
-            </div>
-	        </div>
-	    </div>
-    </div>
-	</div>
+								<div ng-hide='chart.type == undefined' class="form-group form-group-sm">
+									<label>{{ chart.charts[chart.type].x }}</label>
+									<select  ng-hide='chart.charts[chart.type].x == undefined' class="form-control" ng-model='chart.x_index'>
+										<option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
+									</select>
+								</div>
+								<div ng-hide='chart.type == undefined' class="form-group form-group-sm">
+									<label>{{ chart.charts[chart.type].y }} </label>
+									<select ng-hide='chart.charts[chart.type].y == undefined' class="form-control" ng-model='chart.y_index'>
+										<option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
+									</select>
+								</div>
+								<div ng-hide='chart.type == undefined' class="form-group form-group-sm">
+									<label>{{ chart.charts[chart.type].z }} </label>
+									<select ng-hide='chart.charts[chart.type].z == undefined' class="form-control" ng-model='chart.z_index'>
+										<option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
+									</select>
+								</div>
+								<button type="submit" class="btn btn-xs btn-default">Generate Chart</button>
+							</form>
+						</div><!-- modal-body -->
 
+					</div><!-- /modal-content -->
+				</div><!-- /modal-dialog -->
+			</div><!-- /modal -->
+		</div>
+
+		<!-- Table Button -->
 		<h5 ng-show='table.showEditView' class='pull-right'>
-		  <button type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>
-			  Add Column
-		  </button>
-		  <button type="button" class="btn btn-default btn-sm" ng-click='table.undo()'>
-			  Undo
-		  </button>
-		  <button type="button" class="btn btn-default btn-sm" ng-click='table.redo();'>
-			  Redo
-		  </button>
+			<button type="button" class="btn btn-primary btn-sm" ng-click='table.addRemark()'>Add Column</button>
+			<button type="button" class="btn btn-default btn-sm" ng-click='table.undo()'>Undo</button>
+			<button type="button" class="btn btn-default btn-sm" ng-click='table.redo();'>Redo</button>
 		</h5>
 
-
+		<!-- Data Table View -->
 		<table ng-show='table.showEditView' class='table table-striped'>
-      <tr>
-		    <th ng-repeat='tb in tableArr track by $index'>
-			  	<font ng-show='!formArr[$index].edit' ng-click="table.setTitle(formArr[$index], true, $index)">
-			    	{{ tb }}
-			    </font>
-			    <input ng-show='formArr[$index].edit' ng-model="formArr[$index].title" type="text" class="form-control input-sm" ng-blur="table.setTitle(formArr[$index], false, $index)" autofocus />
-			    <a href ng-show='formArr[$index].type == "remark"' ng-click='table.setFunc($index)'> func </a>
-			    <a href ng-click="table.delete_col($index, tb)">
-					  <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+			<tr>
+				<th ng-repeat='tb in tableArr track by $index'>
+					<font ng-show='!formArr[$index].edit' ng-click="table.setTitle(formArr[$index], true, $index)">{{ tb }}</font>
+					<input ng-show='formArr[$index].edit' ng-model="formArr[$index].title" type="text" class="form-control input-sm" ng-blur="table.setTitle(formArr[$index], false, $index)" autofocus />
+					<a href ng-show='formArr[$index].type == "remark"' ng-click='table.setFunc($index)'> func </a>
+					<a href ng-click="table.delete_col($index, tb)">
+						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 					</a>
-		    </th>
-		    <th> Options </th>
-		  </tr>
-		  <tr ng-repeat='data in dataArr track by $index'>
-		  	<td ng-repeat='data in data.data track by $index' class="col-xs-2">
-			  	<font ng-if="data.type == 'textbox'" ng-show='!data.edit' ng-click="table.setEdit(data, true, $index, $parent.$parent.$index)">
-			      {{ data.ans }} 
-			    </font>
-			    <input ng-if="data.type == 'textbox'" ng-show="data.edit" ng-model="table.new_data" type="text" class="form-control input-sm" ng-blur="table.setEdit(data, false, $index, $parent.$parent.$index)" autofocus />
+				</th>
+				<th> Options </th>
+			</tr>
 
-				<select id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'select'" class="form-control input-sm col-xs-2" ng-blur='table.setSelect($parent.$parent.$index, $index, data)'>
-					<option ng-selected="{{option == data.ans}}" ng-repeat="option in data.options">{{ option }}</option>
-				</select>
+			<tr ng-repeat='data in dataArr track by $index'>
+				<td ng-repeat='data in data.data track by $index' class="col-xs-2">
+					<font ng-if="data.type == 'textbox'" ng-show='!data.edit' ng-click="table.setEdit(data, true, $index, $parent.$parent.$index)">
+						{{ data.ans }} 
+					</font>
+					<input ng-if="data.type == 'textbox'" ng-show="data.edit" ng-model="table.new_data" type="text" class="form-control input-sm" ng-blur="table.setEdit(data, false, $index, $parent.$parent.$index)" autofocus />
 
-				<select id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'checkbox'" ng-blur='table.setSelect($parent.$parent.$index, $index, data)' multiple> 
-					<option ng-selected="{{data.ans.indexOf(option) != -1}}" ng-repeat="option in data.options">{{ option }}</option>
-				</select>
+					<select id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'select'" class="form-control input-sm col-xs-2" ng-blur='table.setSelect($parent.$parent.$index, $index, data)'>
+						<option ng-selected="{{option == data.ans}}" ng-repeat="option in data.options">{{ option }}</option>
+					</select>
 
-				<input id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'remark'" ng-model="data.ans" type="text" class="form-control input-sm" ng-keypress='table.listenForCalc($parent.$parent.$index, $index, data, $event)' ng-blur="table.setEdit(data, false, $index)"/>
-		    </td>
-		    <td> 
-		    	<button class="btn btn-danger btn-xs" ng-click='table.removeData(data._id, $index)'>
+					<select id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'checkbox'" ng-blur='table.setSelect($parent.$parent.$index, $index, data)' multiple> 
+						<option ng-selected="{{data.ans.indexOf(option) != -1}}" ng-repeat="option in data.options">{{ option }}</option>
+					</select>
+
+					<input id='Question{{ $parent.$parent.$index }}-{{$index}}' ng-if="data.type == 'remark'" ng-model="data.ans" type="text" class="form-control input-sm" ng-keypress='table.listenForCalc($parent.$parent.$index, $index, data, $event)' ng-blur="table.setEdit(data, false, $index)"/>
+				</td>
+				<td>
+					<button class="btn btn-danger btn-xs" ng-click='table.removeData(data._id, $index)'>
 						<span class="glyphicon glyphicon-remove" aria-hidden="true" ></span>
-					  Delete
-				  </button>
-			  </td>
-		  </tr>
+							Delete
+					</button>
+				</td>
+			</tr>
 		</table>
 
-
+		<!-- Data Table Edit -->
 		<table ng-show='!table.showEditView' class='table table-bordered col-xs-9'>
-      <tr>
-		    <th ng-repeat='tb in tableArr track by $index'>
-			  	<font>
-			    	{{ tb }}
-			    </font>
-		    </th>
-		  </tr>
-		  <tr ng-repeat='data in dataArr track by $index'>
-		  	<td ng-repeat='data in data.data track by $index' class="col-xs-2">
-			  	<font>
-			      {{ data.ans }} 
-			    </font>
-		    </td>
-		  </tr>
+			<tr>
+				<th ng-repeat='tb in tableArr track by $index'>
+					<font>{{ tb }}</font>
+				</th>
+			</tr>
+			<tr ng-repeat='data in dataArr track by $index'>
+				<td ng-repeat='data in data.data track by $index' class="col-xs-2">
+					<font>{{ data.ans }}</font>
+				</td>
+			</tr>
 		</table>
 
 		<button class="btn btn-info btn-md" ng-click='table.goBack()'>
 			<span class="glyphicon glyphicon-menu-left" aria-hidden="true" ></span>
-		  Back
+				Back
 		</button>
 		<button class="btn btn-primary btn-md" ng-click='table.saveData()' data-toggle="modal" data-target="#saveDataModal">
 			<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true" ></span>
-		  Save
+				Save
 		</button>
-
 		<button class="btn btn-success btn-md pull-right" ng-click='table.editView()'>
-		  Switch Views
+				Switch Views
 		</button>
 
-</div>
+	</div><!-- /container -->
+</div><!-- /data-table.html -->
+

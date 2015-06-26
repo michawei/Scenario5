@@ -1,0 +1,147 @@
+<div ng-controller="contentCtrl as content" ng-show='page == 2'>
+	
+	<!-- Save Modal -->
+	<div class="modal fade" id="saveModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Form Saved</h4>
+				</div>
+				<div class="modal-body">
+					You have saved the current form. Do you want to continue to edit? 
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" ng-click='content.goBack()'>No, Go Back to List</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Yes, Continue to Edit</button>
+				</div>
+			</div><!-- /modal-content -->
+		</div><!-- /modal-dialog -->
+	</div><!-- /modal -->
+
+	<!-- Save As Modal -->
+	<div class="modal fade" id="saveAsModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Save As...</h4>
+				</div>
+				<div class="modal-body">
+					<p>Form Name: <input ng-model='content.newFormName'></input> </p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click='content.makeNew()'>Save As {{ content.newFormName }}</button>
+				</div>
+			</div><!-- /modal-content -->
+		</div><!-- /modal-dialog -->
+	</div><!-- /modal -->
+
+	<!-- Change Title Modal -->
+	<div class="modal fade" id="changeTitleModal">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">New Title...</h4>
+				</div>
+				<div class="modal-body">
+					<p>New Form Title: <input ng-model='list.newFormName'></input> </p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" ng-click='list.updateCurrTitle()'>Save {{ list.newFormName }}</button>
+				</div>
+			</div><!-- /modal-content -->
+		</div><!-- /modal-dialog -->
+	</div><!-- /modal -->
+
+	<!-- Cancel Model -->
+	<div id="cancelModal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Cancel Confirmation</h4>
+				</div>
+				<div class="modal-body">
+					<p>You are about to cancel your edits. Do you want to continue?</p>
+					<p class="text-warning"><small>Unsaved changes would be lost</small></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal" ng-click='content.goBack()'>Yes</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal">No, I want to Save</button>
+				</div>
+			</div><!-- /modal-content -->
+		</div><!-- /modal-dialog -->
+	</div><!-- /modal -->
+
+	<!-- Form Content View -->
+	<div id="formContent" class="container col-xs-offset-2 col-xs-10">
+		<h2> 
+			{{ name }}  <br>
+			<button type="button" class="btn btn-info btn-xs" data-toggle="modal" data-target="#changeTitleModal" >Edit Form Title</button>    	
+			<button type="button" class="btn btn-default btn-xs" ng-click='content.undo()'>Undo</button>
+			<button type="button" class="btn btn-default btn-xs" ng-click='content.redo()'>Redo</button>
+		</h2> 
+
+		<br> 
+		<ul class="list-unstyled" id="sortable">
+		<div class="row" ng-repeat="question in formArr track by $index">
+			<li ng-show="!question.edit" ng-click="content.setEdit(question,true,$index)" class="col-xs-2">
+				<h5 ng-if='question.type != "remark"'> {{question.title}} : </h5>
+			</li>
+			<li ng-show="question.edit" class="col-xs-2">
+				<input ng-model="content.question_new_title" type="text" class="form-control" placeholder="question title" ng-blur="content.setEdit(question, false,$index)" autofocus/>
+			</li>
+			<div class="col-xs-3">
+				<div ng-if='question.type == "textbox"'>
+					<input type='text' class='form-control input-sm'></input>
+				</div> 
+				<div ng-if='question.type == "select"'>
+					<input type='text' class='form-control input-sm' ng-repeat='option in question.options track by $index' ng-model='option' ng-blur='content.setOption($index, option, question, $parent.$index)' autofocus></input>
+					<button class='btn btn-default btn-xs pull-right' ng-click='content.addOptions(question, $index)'> Add Options </button>
+					<button class='btn btn-default btn-xs pull-right' ng-click='content.delOptions(question, $index)'> Delete Options </button>
+				</div> 
+				<div ng-if='question.type == "checkbox"'>
+					<input type='text' class='form-control input-sm' ng-repeat='option in question.options track by $index' ng-model='option' ng-blur='content.setOption($index, option, question)' autofocus></input>
+					<button class='btn btn-default btn-xs pull-right' ng-click='content.addOptions(question, $index)'> Add Options </button>
+					<button class='btn btn-default btn-xs pull-right' ng-click='content.delOptions(question, $index)'> Delete Options </button>
+				</div> 
+			</div>
+			<select ng-if='question.type != "remark"' class="form-control input-sm col-xs-2" ng-model="question.type">
+				<option value="" disabled selected>--Select Input Type--</option>
+				<option value="textbox">TextBox</option>
+				<option value="select">Select</option>
+				<option value="checkbox">Check Box</option>
+			</select>
+			<a href ng-if='question.type != "remark"' ng-style="{color: content.Scolor}" ng-mouseover='content.Scolor = "#a4a4a4"' ng-mouseleave='content.Scolor = "#d2d2d2"'>
+				<span class="glyphicon glyphicon-sort" aria-hidden="false"></span>
+			</a>
+			<a href ng-if='question.type != "remark"' ng-click="content.delete_question(question);" ng-style="{color: content.Xcolor}" ng-mouseover='content.Xcolor = "#a4a4a4"' ng-mouseleave='content.Xcolor = "#d2d2d2"'>
+				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+			</a>
+		</div>
+		</ul>
+		<botton type="botton" class="btn btn-primary btn-md" ng-click="content.add_question()"> 
+			<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				Add 
+		</botton>
+		<button type="button" class="btn btn-default btn-xs" data-dismiss="modal" ng-click='content.undo()'>Undo</button>
+		<button type="button" class="btn btn-default btn-xs" data-dismiss="modal" ng-click='content.redo()'>Redo</button>
+		<span class='pull-right'>
+			<button ng-click='content.saveForm()' class="btn btn-success btn-md" data-toggle="modal" data-target="#saveModal">
+				<span class="glyphicon glyphicon-floppy-disk" aria-hidden="true"></span>
+					Save
+			</button>
+			<button class="btn btn-info btn-md" data-toggle="modal" data-target="#saveAsModal">
+				<span class="glyphicon glyphicon glyphicon-plus" aria-hidden="true"></span>
+					Save As...
+			</button>
+			<button class="btn btn-danger btn-md" data-toggle="modal" data-target="#cancelModal">
+				<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+					Cancel
+			</button>
+		</span>
+	</div><!-- /From Content View -->
+</div><!-- /form-content.html -->
+

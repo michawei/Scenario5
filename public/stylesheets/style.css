@@ -1,8 +1,129 @@
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
+}
+
+
+#formMenu {
+	min-height: 90px;
+	padding-left: 25px;
+}
+
+#dataMenu {
+	min-height: 90px;
+	padding-left: 25px;
+}
+
+.col-xs-8 {
+	margin-bottom: 20px;
+}
+
+#purple {
+	min-height: 60px;
+	background: #E6E6F6;
+	margin-bottom: 20px;
+}
+
+#green {
+	min-height: 60px;
+	background: #E6F6E6;
+	margin-bottom: 20px;
+}
+
+.jumbotron {
+	background:transparent;
+	padding-top: 10px;
+}
+
+#menuLabel {
+	margin-top:0px;
+}
+
+#menuLabel2 {
+	margin-top:0px;
+}
+
+#formLabel {
+	margin-left: 10px;
+	cursor: pointer;
+	color:#0000a4;
+}
+
+#formLabel2 {
+	margin-left: 10px;
+	cursor: pointer;
+	color:#0000a4;
+}
+
+#dataLabel {
+	margin-left: 10px;
+	cursor: pointer;
+	color: #a4a4a4
+}
+
+#dataLabel2 {
+	margin-left: 10px;
+	cursor: pointer;
+	color: #a4a4a4
+}
+
+.contianer-fluid {
+	padding-left: 30px;
+	padding-right: 30px;
+	margin-top:75px
+}
+
+#newFormBtn {
+	margin-right: 30px;
+}
+
+#formContent {
+	margin-top:5%;
+	margin-left:5%;
+	margin-right:5%;
+	margin-bottom:5%;
+	border: 1px solid 000000;
+}
+
+.col-xs-2 {
+	margin-right: 5px;
+}
+
+.btn.btn-default.btn-xs.pull-right {
+	margin: 5px;
+}
+
+.form-control.input-sm {
+	margin-bottom: 5px;
+}
+
+.glyphicon.glyphicon-sort {
+	margin-left:10px;
+}
+
+.glyphicon.glyphicon-remove{
+	margin-left:10px;
+}
+
+#formBody {
+	margin-top:5%;
+	margin-left:5%;
+	margin-right:5%;
+	margin-bottom:5%;
+	border: 1px solid 000000; 
+}
+
+#chart {
+	margin-top:5%;
+	margin-bottom:5%;
+	border: 1px solid 000000; 
+}
+
+#chartController {
+	margin-top: 5px;
+	margin-bottom: 5px;
+	border: 1px;
 }
