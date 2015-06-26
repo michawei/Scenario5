@@ -12,6 +12,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 
 	this.showEditView = false;
 
+	// Switch Views : data is only view or editing mode
 	this.editView = function() {
 		if(this.showEditView) {
 			this.showEditView = false;
@@ -26,6 +27,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		S5Service.pushToUndo({'command': 'removeData', 'data': data, 'index': index});
 	};
 
+	// Redo : recover my last editing
 	this.goBack = function() {
 		S5Service.clearStacks();
 		$scope.setPage(4);
@@ -34,10 +36,10 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 	this.setTitle = function(form, bool, index){
 		if(this.calculating) {
 			for (var i=0; i < $scope.dataArr.length; i++){
-			 var val = $scope.dataArr[i].data[this.calcIndex].ans;
-			 $scope.dataArr[i].data[this.calcIndex].ans = val + 'col:' + index;
-			 angular.element("#Question0-" + this.calcIndex).focus();
-		  }
+				var val = $scope.dataArr[i].data[this.calcIndex].ans;
+				$scope.dataArr[i].data[this.calcIndex].ans = val + 'col:' + index;
+				angular.element("#Question0-" + this.calcIndex).focus();
+			}
 		} else {
 			form.edit = bool;
 			if(form.title != ''){
@@ -55,15 +57,16 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 		}
 	};
 
+	// Our editing start and finish
 	this.setEdit = function(data, bool, index, d_index) {
-		if(!bool) {
+		if(!bool) {											// When editing has done, we save it to templete ans
 			data.edit = bool;
 			if (this.new_data != '') {
 				S5Service.pushToUndo({'command': 'setEdit', 'data': data, 'prevData': data.ans, 'newData': this.new_data});
-			  data.ans = this.new_data;
-			  this.new_data = '';
-			  if(data.inFunc != undefined) {
-			  	var func = $scope.dataArr[d_index].data[data.inFunc].func;
+				data.ans = this.new_data;
+				this.new_data = '';
+				if(data.inFunc != undefined) {
+					var func = $scope.dataArr[d_index].data[data.inFunc].func;
 					var colReg = /col:(\d+)/;
 					while (colReg.test(func)) {
 						var index = colReg.exec(func)[1];
@@ -71,19 +74,19 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 					}
 					var ans = this.computeNum(func.slice(1));
 					$scope.dataArr[d_index].data[data.inFunc].ans = ans;
-			  }
-		  }
-		} else if (this.compute && !isNaN(data.ans)) {
+				}
+			}
+		} else if (this.compute && !isNaN(data.ans)) {		// While function mode is on, load our typing 
 			var element = angular.element(this.computing_input);
 			element.val(element.val() + data.ans);
 			element.focus();
-		} else if (this.calculating) {
+		} else if (this.calculating) {						// detecting the chosen column
 			for (var i=0; i < $scope.dataArr.length; i++){
-			  var val = $scope.dataArr[i].data[this.calcIndex].ans;
-			  $scope.dataArr[i].data[this.calcIndex].ans = val + 'col:' + index;
-			  angular.element("#Question0-" + this.calcIndex).focus();
-		  }
-		}else {
+				var val = $scope.dataArr[i].data[this.calcIndex].ans;
+				$scope.dataArr[i].data[this.calcIndex].ans = val + 'col:' + index;
+				angular.element("#Question0-" + this.calcIndex).focus();
+			}
+		} else {
 			data.edit = bool;
 			this.new_data = data.ans;
 		}
@@ -290,7 +293,7 @@ angular.module('scenario5App').controller('DataTableController', ['$scope', '$ht
 			action.question.ans = action.newData;
 		} else if (action.command == 'delete_col') {
 			$scope.tableArr.splice(action.index, 1);
-		  for(var i = 0; i < $scope.dataArr.length; i++) {
+			for(var i = 0; i < $scope.dataArr.length; i++) {
 				$scope.dataArr[i].data.splice(action.index, 1);
 			}
 		}

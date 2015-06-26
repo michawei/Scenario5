@@ -22,8 +22,10 @@
 
 						<div class="modal-header">
 							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-							<button ng-hide='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(true, options.chart)'>Settings</button>
-							<button ng-show='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(false)'>Hide Settings</button>
+							<p ng-show='chart.type != 2'>
+								<button ng-hide='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(true, options.chart)'>Settings</button>
+								<button ng-show='chart.settings' class="btn btn-xs btn-info" ng-click='chart.showSettings(false)'>Hide Settings</button>
+							</p>
 							<!-- Chart Settings -->
 							<div ng-show='chart.settings'>
 								<form class='form-inline' ng-submit='chart.setRange(chart.minY, chart.maxY)'>
@@ -34,7 +36,7 @@
 									</div>
 								</form>
 
-								<form class='form-inline' ng-submit='chart.setDomain(chart.minX, chart.maxX)'>
+								<form class='form-inline' ng-show='chart.type != 1' ng-submit='chart.setDomain(chart.minX, chart.maxX)'>
 									<div class='form-group form-group-sm'>
 										<label> X-Axis Domain </label>
 										<input type='text' ng-model='chart.minX'/> - <input type='text' ng-model='chart.maxX'>
@@ -72,7 +74,7 @@
 										<option ng-repeat='options in tableArr' ng-value='{{$index}}' >{{ options }}</option>
 									</select>
 								</div>
-								<button type="submit" class="btn btn-xs btn-default">Generate Chart</button>
+								<button type="submit" class="btn btn-xs btn-default" ng-click='chart.showSettings(false)'>Generate Chart</button>
 							</form>
 						</div><!-- modal-body -->
 

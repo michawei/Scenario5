@@ -53,7 +53,7 @@
 			<div class='contianer-fluid'>
 				<label class='pull-right'>Search: <input ng-model="search.name"></label>
 				<ul class='list-group col-xs-9'>
-					<a href ng-click='list.useForm(form.name,form.category,form.form,form._id)' class='list-group-item clearfix' ng-repeat='form in formsList | filter:search:strict'> 
+					<a href ng-click='list.useForm(form.name, form.category, form.form, form._id)' class='list-group-item clearfix' ng-repeat='form in formsList | filter:search:strict'> 
 						<small> [ FORM ]</small>
 						<b>{{ form.name }}</b>
 						<span class="pull-right">

@@ -1,9 +1,12 @@
 angular.module('scenario5App').controller('BlankController', ['$scope', '$http', function($scope, $http) {
 	
-  this.dataArr = [];
+	this.dataArr = [];
 
+	// Create blank form
 	this.submitForm = function() {
 		this.dataArr = [];
+
+		// Put user's ans to the proper location in array
 		for(var i = 0; i < $scope.formArr.length; i++) {
 			var title = $scope.formArr[i].title;
 			var type = $scope.formArr[i].type;
@@ -19,6 +22,8 @@ angular.module('scenario5App').controller('BlankController', ['$scope', '$http',
 			  this.dataArr.push({ 'question' : title, 'type': type, 'ans' : $(id).val(), 'options' : options, 'edit': false });
 			}
 		}
+
+		// Send to Database
 		$http.post('/data', { 
 			'formName' : $scope.name,
 			'formCategory' : $scope.category,
