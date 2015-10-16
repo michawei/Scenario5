@@ -116,7 +116,7 @@ angular.module('scenario5App').controller('contentCtrl', ['$scope', '$http', 'S5
 	sortableEle = $('#sortable').sortable({
 		start: $scope.dragStart,
 		update: $scope.dragEnd
-  });
+	});
 
 	this.undo = function() {
 	var command = S5Service.popUndo();

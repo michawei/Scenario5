@@ -106,13 +106,15 @@
 					<input type='text' class='form-control input-sm' ng-repeat='option in question.options track by $index' ng-model='option' ng-blur='content.setOption($index, option, question)' autofocus></input>
 					<button class='btn btn-default btn-xs pull-right' ng-click='content.addOptions(question, $index)'> Add Options </button>
 					<button class='btn btn-default btn-xs pull-right' ng-click='content.delOptions(question, $index)'> Delete Options </button>
-				</div> 
+				</div>
 			</div>
 			<select ng-if='question.type != "remark"' class="form-control input-sm col-xs-2" ng-model="question.type">
 				<option value="" disabled selected>--Select Input Type--</option>
 				<option value="textbox">TextBox</option>
 				<option value="select">Select</option>
-				<option value="checkbox">Check Box</option>
+				<option value="checkbox">CheckBox</option>
+				<option>Cloze</option>
+				<option>Matching</option>
 			</select>
 			<a href ng-if='question.type != "remark"' ng-style="{color: content.Scolor}" ng-mouseover='content.Scolor = "#a4a4a4"' ng-mouseleave='content.Scolor = "#d2d2d2"'>
 				<span class="glyphicon glyphicon-sort" aria-hidden="false"></span>

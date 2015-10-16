@@ -267,13 +267,15 @@ angular.module('scenario5App').controller('ChartCtrl', ['$scope', '$http', 'S5Se
 	};
 
 	this.setRange = function(y_min, y_max){		// y
-		$scope.options.chart.forceY = [this.minY, this.maxY];
+		//$scope.options.chart.forceY = [this.minY, this.maxY];
 		$scope.options.chart.forceY = [y_min, y_max];
+		//$scope.options.chart.yAxis.scale().domain([y_min, y_max]);
 	};
 
 	this.setDomain = function(x_min, x_max){	// x
-		$scope.options.chart.forceY = [this.minX, this.maxX];
-		$scope.options.chart.forceX = [x_min, x_max];
+		//$scope.options.chart.forceY = [this.minX, this.maxX];
+		//$scope.options.chart.forceX = [x_min, x_max];
+
 	};
 
 }]);
